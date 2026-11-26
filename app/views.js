@@ -8,8 +8,10 @@ import {
   censusTrend,
   censusTrendSource,
   ageShares2020,
+  ageMilestones2020,
   ageSharesSource,
   pyramidGroups,
+  pyramidAgeUnknown,
   pyramidSource,
   ageingTrend,
   ageingSource,
@@ -83,6 +85,7 @@ export function renderOverview() {
     points: censusTrend.map((p) => ({ label: String(p.year), value: p.millions })),
     formatValue: (v) => `${Math.round(v)}M`,
     color: '#2c4a8a',
+    height: 190,
   });
   const glance = glanceFacts
     .map(
@@ -97,17 +100,28 @@ export function renderOverview() {
   <section class="hero">
     <p class="hero-kicker">Nippon Statistics Atlas</p>
     <h1>Japan in Numbers</h1>
-    <p class="hero-lede">The people, economy and everyday life of Japan, told through the
-    official statistics — every figure with its source and year, nothing fetched, nothing guessed.</p>
+    <p class="hero-lede">Japan’s people, economy and everyday life, told through official statistics.</p>
+    <p class="hero-strip">
+      <span class="hero-chip">2020 Census</span>
+      <span class="hero-chip">47 prefectures</span>
+      <span class="hero-chip">A source on every figure</span>
+    </p>
   </section>
 
   <section class="kpi-grid" aria-label="Headline indicators">${kpis}</section>
 
   ${panel(
     'A century of population, 1920–2020',
-    `<p class="panel-intro">Japan counted 55.96 million people in its first modern census in 1920,
-     peaked at 128.06 million in 2010, and has been shrinking since — the 2020 Census found
-     126,146,099 people, and the 2024 estimate is 123.8 million.</p>${trend}`,
+    `<div class="trend-cols">
+       <div>
+         <p class="panel-intro">Japan counted 55.96 million people in its first modern census
+          in 1920, peaked at 128.06 million in 2010, and has been shrinking since.</p>
+         <p class="panel-intro">The 2020 Census found 126,146,099 people; the estimate for
+          October 2024 is 123.8 million — some 4.3 million below the peak, with the fall
+          steepening every year.</p>
+       </div>
+       <div>${trend}</div>
+     </div>`,
     censusTrendSource,
   )}
 
@@ -117,7 +131,7 @@ export function renderOverview() {
       <h2>Explore the atlas</h2>
       <a class="explore-link" href="#/population"><strong>Population</strong><span>Pyramid, ageing and a century of censuses →</span></a>
       <a class="explore-link" href="#/economy"><strong>Economy</strong><span>GDP, jobs, prices and trade →</span></a>
-      <a class="explore-link" href="#/prefectures"><strong>Prefectures</strong><span>All 47 prefectures — search and sort the table →</span></a>
+      <a class="explore-link" href="#/prefectures"><strong>Prefectures</strong><span>All 47 prefectures — compare any two or three, search and sort the table →</span></a>
       <a class="explore-link" href="#/life"><strong>Life</strong><span>Health, school, households and working time →</span></a>
     </section>
   </div>`;
@@ -147,18 +161,35 @@ export function renderPopulation() {
     .map((p) => `<tr><td>${p.year}</td><td>${p.millions.toFixed(2)} million</td></tr>`)
     .join('');
 
+  const milestones = ageMilestones2020
+    .map((m) => `<p class="legend-row"><strong>${m.label}</strong> — ${m.persons} people</p>`)
+    .join('');
+  const unknownNote = `<p class="panel-note">Age not reported: ${formatPersons(pyramidAgeUnknown.total)} people
+    (${formatPersons(pyramidAgeUnknown.male)} men, ${formatPersons(pyramidAgeUnknown.female)} women) are counted
+    in the totals but not in any age group.</p>`;
+
   return `
   <section class="page-head">
     <h1>Population</h1>
-    <p>126,146,099 people were counted on 1 October 2020: 61.35 million men and 64.80 million women.
-    The shape of the pyramid — wide at 45–49 and 70–74, narrow at the base — is the story of
-    post-war Japan: two baby booms, then decades of few births.</p>
+    <p>126,146,099 people were counted on 1 October 2020 — 61,349,581 men and 64,796,518
+    women — in a pyramid wide at 45–49 and 70–74, narrow at the base.</p>
   </section>
 
-  ${panel('Population pyramid, 2020', pyramid, pyramidSource)}
+  ${panel(
+    'Population pyramid, 2020 Census',
+    `<p class="panel-intro">Every bar is an exact headcount from Table 2-3 of the census — no rounding.</p>${pyramid}${unknownNote}`,
+    pyramidSource,
+  )}
 
   <div class="two-col">
-    ${panel('Three generations, 2020', `${shares}<div class="legend">${legend}</div>`, ageSharesSource)}
+    ${panel(
+      'Three generations, 2020',
+      `${shares}<div class="legend">${legend}${milestones}</div>
+       <p class="panel-note">These shares use the census's imputed values, which distribute the
+       ${formatPersons(pyramidAgeUnknown.total)} people of unreported age; the pyramid above
+       shows the original values.</p>`,
+      ageSharesSource,
+    )}
     ${panel(
       'Census totals, every ten years',
       `<table class="mini-table"><thead><tr><th>Census</th><th>Population</th></tr></thead><tbody>${censusRows}</tbody></table>`,
@@ -201,9 +232,9 @@ export function renderEconomy() {
   return `
   <section class="page-head">
     <h1>Economy</h1>
-    <p>Japan's nominal GDP reached a record ¥609.3 trillion in 2024. Three workers in four
-    are in services, unemployment is 2.5%, and prices rose 2.7% in 2024 — fast by Japan's
-    recent standards.</p>
+    <p>Japan's nominal GDP reached a record ¥636.9 trillion in 2024 in the Cabinet Office's
+    2020-benchmark National Accounts. Three workers in four are in services, unemployment
+    is 2.5%, and prices rose 2.7% in 2024 — fast by Japan's recent standards.</p>
   </section>
 
   ${panel('Nominal GDP, 2014–2024', gdp, gdpTrendSource)}
@@ -245,6 +276,49 @@ export function prefectureRowsHtml(list) {
     .join('');
 }
 
+// The national total the prefecture shares are measured against: the
+// 47 prefecture populations sum to the 2020 Census total.
+export const NATIONAL_POPULATION_2020 = 126146099;
+
+function prefectureRank(pref) {
+  return [...prefectures].sort((a, b) => b.population - a.population).findIndex((p) => p.name === pref.name) + 1;
+}
+
+// Comparison result for the prefecture picker: bars scaled to the largest
+// pick, each labelled with its exact population, its share of the national
+// total and its rank among the 47. main.js re-renders this on every change.
+export function compareResultHtml(names) {
+  const seen = new Set();
+  const picks = [];
+  for (const name of names) {
+    const pref = prefectures.find((p) => p.name === name);
+    if (pref && !seen.has(pref.name)) {
+      seen.add(pref.name);
+      picks.push(pref);
+    }
+  }
+  if (picks.length < 2) {
+    return '<p class="panel-note">Pick at least two different prefectures to compare them.</p>';
+  }
+  const chart = horizontalBars({
+    items: picks.map((p) => ({
+      label: p.name,
+      value: p.population,
+      display: `${formatPersons(p.population)} · ${(100 * (p.population / NATIONAL_POPULATION_2020)).toFixed(1)}% · #${prefectureRank(p)}`,
+    })),
+    valueW: 218,
+    rowHeight: 34,
+  });
+  const details = picks
+    .map(
+      (p) => `<p class="legend-row"><strong>${p.name}</strong> — ${formatPersons(p.population)} people,
+        ${(100 * (p.population / NATIONAL_POPULATION_2020)).toFixed(1)}% of Japan's ${formatPersons(NATIONAL_POPULATION_2020)},
+        rank ${prefectureRank(p)} of 47; capital ${p.capital}, ${p.region} region.</p>`,
+    )
+    .join('');
+  return `${chart}<div class="legend">${details}</div>`;
+}
+
 export function renderPrefectures() {
   const top10 = [...prefectures]
     .sort((a, b) => b.population - a.population)
@@ -255,18 +329,42 @@ export function renderPrefectures() {
       value: p.population,
       display: `${(p.population / 1_000_000).toFixed(2)}M`,
     })),
+    rowHeight: 25,
   });
   const byPopulation = [...prefectures].sort((a, b) => b.population - a.population);
+  const options = (selected, allowNone) =>
+    `${allowNone ? '<option value="">— none —</option>' : ''}${byPopulation
+      .map((p) => `<option value="${p.name}"${p.name === selected ? ' selected' : ''}>${p.name}</option>`)
+      .join('')}`;
 
   return `
   <section class="page-head">
     <h1>Prefectures</h1>
-    <p>All 47 prefectures from the 2020 Census. Tokyo alone holds 14,047,594 people —
-    more than one in nine Japanese — while Tottori, the smallest, holds 553,407.
-    Search the table or change the sort order: both controls work on the full list.</p>
+    <p>All 47 prefectures from the 2020 Census — Tokyo holds 14,047,594 people, Tottori
+    just 553,407. Compare any two or three, or search and sort the table.</p>
   </section>
 
   ${panel('The ten largest prefectures', chart, prefectureSource)}
+
+  <section class="panel">
+    <h2>Compare prefectures</h2>
+    <p class="panel-intro">Pick two or three prefectures and see them side by side —
+    bars are scaled to the largest pick, with each one's share of Japan's
+    126,146,099 people and its rank of 47.</p>
+    <div class="pref-controls">
+      <label>First prefecture
+        <select id="compareA">${options('Tokyo', false)}</select>
+      </label>
+      <label>Second prefecture
+        <select id="compareB">${options('Osaka', false)}</select>
+      </label>
+      <label>Third prefecture (optional)
+        <select id="compareC">${options('Tottori', true)}</select>
+      </label>
+    </div>
+    <div id="compareResult">${compareResultHtml(['Tokyo', 'Osaka', 'Tottori'])}</div>
+    <p class="source">Source: ${prefectureSource}</p>
+  </section>
 
   <section class="panel">
     <h2>All 47 prefectures</h2>
@@ -321,7 +419,12 @@ export function renderLife() {
     and workers are finally taking more of their paid leave.</p>
   </section>
 
-  ${panel('Life expectancy at birth, 1990–2023', expectancy, lifeExpectancySource)}
+  ${panel(
+    'Life expectancy at birth, 1990–2023',
+    `<p class="panel-intro">Women gained about five years and men about five years between
+     1990 and 2023 — then both lines dipped after 2020, the first sustained fall in decades.</p>${expectancy}`,
+    lifeExpectancySource,
+  )}
 
   <div class="two-col">
     ${panel('Health', factRows(healthFacts), healthSource)}

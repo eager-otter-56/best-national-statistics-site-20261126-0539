@@ -9,7 +9,7 @@ make.fun bounty **best-national-statistics-site-20261126-0539**
 (https://make.fun/bounty/best-national-statistics-site-20261126-0539).
 
 The atlas tells the story of Japan through its official statistics: a shrinking,
-ageing population of 123.8 million, a record ¥609.3 trillion economy, all 47
+ageing population of 123.8 million, a record ¥636.9 trillion economy, all 47
 prefectures, and the everyday numbers of health, school, households and work.
 Every figure on every page carries its source and year. The site is plain static
 files with no build step and no network requests — open `app/index.html` and it
@@ -20,28 +20,43 @@ works, on a desktop or a phone.
 - **Overview** (`#/`) — eight headline indicators (population, GDP, GDP per
   capita, life expectancy, median age, fertility, unemployment, households),
   a line chart of a century of census population (1920–2020), and Japan at a glance.
-- **Population** (`#/population`) — the 2020 Census population pyramid by
-  five-year age group and sex, the three-generation split (0–14 / 15–64 / 65+),
-  census totals by decade, the rise of the 65+ share to 29.1%, and 2023 births,
-  deaths and marriages.
-- **Economy** (`#/economy`) — nominal GDP 2014–2024, sector shares, consumer
-  prices, the labour market in 2024, and trade with its largest partners.
+- **Population** (`#/population`) — the 2020 Census population pyramid with the
+  exact five-year age-group headcounts by sex from Table 2-3 of the census
+  (original values, including the 2,931,838 people whose age was not reported),
+  the three-generation split (0–14 / 15–64 / 65+) on the census's imputed
+  values, census totals by decade, the rise of the 65+ share to 29.1%, and
+  2023 births, deaths and marriages.
+- **Economy** (`#/economy`) — nominal GDP 2014–2024 on the Cabinet Office's
+  2020-benchmark National Accounts, sector shares, consumer prices, the labour
+  market in 2024, and trade (2024 final values) with its largest partners.
 - **Prefectures** (`#/prefectures`) — all 47 prefectures with 2020 Census
-  populations, capitals and regions, a top-ten chart, and a table with a
-  working text search and working sort (menu or clickable column headers).
+  populations, capitals and regions, a top-ten chart, a comparison tool that
+  puts any two or three prefectures side by side with their shares of the
+  national population and ranks, and a table with a working text search and
+  working sort (menu or clickable column headers).
 - **Life** (`#/life`) — life expectancy for men and women 1990–2023, doctors
   and infant mortality, school continuation, household size and single-person
   households, working hours and paid-leave uptake.
 
 ## Sources
 
-Statistics Bureau of Japan (Population Census, Labour Force Survey, Consumer
-Price Index, Population Estimates), Cabinet Office (National Accounts),
-Ministry of Health, Labour and Welfare (Vital Statistics, Abridged Life
-Tables, Monthly Labour Survey), Ministry of Finance (Trade Statistics),
-MEXT (School Basic Survey), the World Bank (World Development Indicators)
-and the OECD (Health Statistics). Each panel on the site names its own
-source and year.
+The headline series come from these exact publications:
+
+- **Population Census 2020, Table 2-3 (original values)**, Statistics Bureau
+  of Japan — every bar of the population pyramid is an exact headcount from
+  this table; the broad age shares use the same census's imputed values.
+- **National Accounts (2020 benchmark)**, Cabinet Office — the nominal GDP
+  series 2014–2024 (the superseded 2015-benchmark series is not used).
+- **Life tables**, Ministry of Health, Labour and Welfare — complete life
+  tables to 2020 and the abridged life table for 2023 (life expectancy).
+- **Trade Statistics of Japan, 2024 (final values)**, Ministry of Finance —
+  exports ¥107.09 trillion, imports ¥112.72 trillion, balance −¥5.63 trillion.
+
+Also used: Statistics Bureau (Labour Force Survey, Consumer Price Index,
+Population Estimates), MHLW (Vital Statistics, Monthly Labour Survey),
+MEXT (School Basic Survey), the World Bank (World Development Indicators,
+for the US-dollar GDP-per-capita series) and the OECD (Health Statistics).
+Each panel on the site names its own source and year.
 
 ## Layout of this repository
 
@@ -52,9 +67,9 @@ source and year.
   by job — `data.js` (every figure, with its source), `charts.js` (SVG chart
   builders), `views.js` (one render function per section), `main.js` (the
   hash router and the prefecture table controls).
-- `screenshots/` — four real renders of the site (desktop overview,
-  prefectures, economy, and a phone-size overview); `shots.json` records
-  the route and viewport of each.
+- `screenshots/` — four real renders of the site (desktop overview, the
+  population pyramid, the prefectures section with its comparison tool, and
+  a phone-size overview); `shots.json` records the route and viewport of each.
 - `vendor/makefun-frontend.ts` — the kit's dossier library, unchanged.
 
 ## Run it locally

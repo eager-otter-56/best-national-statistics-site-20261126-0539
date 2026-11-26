@@ -9,6 +9,7 @@ import {
   renderPrefectures,
   renderLife,
   prefectureRowsHtml,
+  compareResultHtml,
 } from './views.js';
 
 const routes = {
@@ -128,6 +129,25 @@ function wirePrefectureTools() {
     });
   });
   paintPrefectureRows();
+  wireCompareTools();
+}
+
+// --- Prefecture comparison tool ---------------------------------------------
+// Three pickers; every change re-renders the bars, shares and ranks from
+// the same 47-row data the table uses.
+function paintCompare() {
+  const result = document.getElementById('compareResult');
+  if (!result) return;
+  const picks = ['compareA', 'compareB', 'compareC'].map((id) => document.getElementById(id)?.value ?? '');
+  result.innerHTML = compareResultHtml(picks);
+}
+
+function wireCompareTools() {
+  ['compareA', 'compareB', 'compareC'].forEach((id) => {
+    const select = document.getElementById(id);
+    if (select) select.addEventListener('change', paintCompare);
+  });
+  paintCompare();
 }
 
 window.addEventListener('hashchange', renderRoute);

@@ -94,11 +94,11 @@ body {
 .page {
   max-width: 1080px;
   margin: 0 auto;
-  padding: 26px 20px 40px;
+  padding: 20px 20px 40px;
 }
 
 .hero {
-  padding: 18px 4px 6px;
+  padding: 10px 4px 2px;
 }
 
 .hero-kicker {
@@ -112,10 +112,31 @@ body {
 
 .hero h1,
 .page-head h1 {
-  font-size: 2.4rem;
-  line-height: 1.15;
-  margin: 0 0 10px;
+  font-size: 2.55rem;
+  line-height: 1.12;
+  margin: 0 0 8px;
   color: var(--indigo);
+}
+
+.hero-strip {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 14px 0 0;
+}
+
+.hero-chip {
+  background: var(--indigo);
+  color: #fff;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  padding: 5px 12px;
+  border-radius: 999px;
+}
+
+.hero-chip:last-child {
+  background: var(--vermillion);
 }
 
 .hero-lede,
@@ -141,8 +162,8 @@ h1[tabindex="-1"]:focus {
 .kpi-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 14px;
-  margin: 22px 0;
+  gap: 12px;
+  margin: 16px 0;
 }
 
 .kpi-card {
@@ -150,7 +171,7 @@ h1[tabindex="-1"]:focus {
   border: 1px solid var(--line);
   border-top: 4px solid var(--indigo-soft);
   border-radius: var(--radius);
-  padding: 16px 16px 12px;
+  padding: 13px 15px 10px;
 }
 
 .kpi-card:nth-child(2),
@@ -169,7 +190,7 @@ h1[tabindex="-1"]:focus {
 
 .kpi-value {
   margin: 4px 0 6px;
-  font-size: 1.72rem;
+  font-size: 1.58rem;
   font-weight: 800;
   color: var(--indigo);
   line-height: 1.1;
@@ -212,10 +233,28 @@ h1[tabindex="-1"]:focus {
   max-width: 46em;
 }
 
+.panel-note {
+  margin: 12px 0 0;
+  font-size: 0.9rem;
+  color: #454e68;
+  background: #f3eee1;
+  border-radius: 10px;
+  padding: 9px 12px;
+}
+
 .two-col {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 18px;
+}
+
+/* Overview trend panel: story text beside the chart, so the chart sits
+   high on the page and reads at a glance. */
+.trend-cols {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 20px;
+  align-items: start;
 }
 
 .two-col .panel {
@@ -473,7 +512,8 @@ h1[tabindex="-1"]:focus {
   .kpi-grid {
     grid-template-columns: repeat(2, 1fr);
   }
-  .two-col {
+  .two-col,
+  .trend-cols {
     grid-template-columns: 1fr;
   }
   .hero h1,

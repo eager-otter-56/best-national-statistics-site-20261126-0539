@@ -9,44 +9,44 @@ export const headlineIndicators = [
   {
     label: 'Population',
     value: '123.8 million',
-    note: 'Estimate for 1 October 2024. The 2020 Census counted 126,146,099 people.',
-    source: 'Statistics Bureau of Japan, 2024',
+    note: 'Estimate for 1 Oct 2024; the 2020 Census counted 126,146,099.',
+    source: 'Statistics Bureau, 2024',
   },
   {
     label: 'GDP (nominal)',
-    value: '¥609.3 trillion',
-    note: 'Calendar 2024, a record high in yen terms.',
+    value: '¥636.9 trillion',
+    note: 'Calendar 2024 — a record high in yen terms.',
     source: 'Cabinet Office, National Accounts, 2024',
   },
   {
     label: 'GDP per capita',
     value: 'US$33,767',
     note: 'Current US dollars, 2023.',
-    source: 'World Bank, World Development Indicators, 2023',
+    source: 'World Bank, WDI, 2023',
   },
   {
     label: 'Life expectancy',
     value: '84.0 years',
-    note: 'At birth, 2023: men 81.09 years, women 87.14 years.',
-    source: 'Ministry of Health, Labour and Welfare, 2023',
+    note: 'At birth, 2023: men 81.09, women 87.14 years.',
+    source: 'MHLW, Abridged Life Table, 2023',
   },
   {
     label: 'Median age',
     value: '49.5 years',
-    note: 'Half the population is older than this — among the highest in the world.',
+    note: 'Half of all Japanese are older — among the world’s highest.',
     source: 'UN World Population Prospects, 2023',
   },
   {
     label: 'Fertility rate',
     value: '1.20',
     note: 'Children per woman, 2023 — a record low.',
-    source: 'Ministry of Health, Labour and Welfare, 2023',
+    source: 'MHLW, Vital Statistics, 2023',
   },
   {
     label: 'Unemployment rate',
     value: '2.5%',
-    note: 'Annual average for 2024, seasonally adjusted basis.',
-    source: 'Statistics Bureau, Labour Force Survey, 2024',
+    note: 'Annual average for 2024.',
+    source: 'Statistics Bureau, Labour Force Survey',
   },
   {
     label: 'Households',
@@ -97,38 +97,53 @@ export const censusTrend = [
 ];
 export const censusTrendSource = 'Statistics Bureau of Japan, Population Census 1920–2020';
 
-// Broad age shares from the 2020 Census (persons, and share of the total).
+// Broad age groups from the 2020 Census. These are the census's published
+// IMPUTED values: the 2,931,838 people whose age was not reported are
+// distributed across the groups, so the three groups sum to the census
+// total of 126,146,099. The pyramid below uses the original values instead.
 export const ageShares2020 = [
-  { label: 'Aged 0–14', persons: '15.03 million', share: 11.9 },
-  { label: 'Aged 15–64', persons: '75.09 million', share: 59.5 },
-  { label: 'Aged 65 and over', persons: '36.03 million', share: 28.6 },
+  { label: 'Aged 0–14', persons: '15,031,602', share: 11.9 },
+  { label: 'Aged 15–64', persons: '75,087,865', share: 59.5 },
+  { label: 'Aged 65 and over', persons: '36,026,632', share: 28.6 },
 ];
-export const ageSharesSource = 'Statistics Bureau of Japan, 2020 Census';
+export const ageMilestones2020 = [
+  { label: 'Aged 75 and over', persons: '18,601,808' },
+  { label: 'Aged 85 and over', persons: '6,133,398' },
+];
+export const ageSharesSource = 'Statistics Bureau of Japan, 2020 Census (imputed values)';
 
-// Population pyramid: five-year age groups by sex, thousands of people,
-// rounded. Men total 61.35 million and women 64.80 million in the census.
+// Population pyramid: five-year age groups by sex, EXACT persons from
+// Table 2-3 of the 2020 Census (original values — no rounding, no
+// estimates). The oldest five groups of the table are combined into 85+.
+// Census totals: 61,349,581 men and 64,796,518 women.
 export const pyramidGroups = [
-  { label: '0–4', male: 2395, female: 2277 },
-  { label: '5–9', male: 2703, female: 2574 },
-  { label: '10–14', male: 2820, female: 2685 },
-  { label: '15–19', male: 2955, female: 2819 },
-  { label: '20–24', male: 3410, female: 3190 },
-  { label: '25–29', male: 3320, female: 3180 },
-  { label: '30–34', male: 3500, female: 3400 },
-  { label: '35–39', male: 3790, female: 3710 },
-  { label: '40–44', male: 4230, female: 4170 },
-  { label: '45–49', male: 4670, female: 4615 },
-  { label: '50–54', male: 4250, female: 4250 },
-  { label: '55–59', male: 3920, female: 3980 },
-  { label: '60–64', male: 3800, female: 3900 },
-  { label: '65–69', male: 4180, female: 4420 },
-  { label: '70–74', male: 4376, female: 4800 },
-  { label: '75–79', male: 3250, female: 3850 },
-  { label: '80–84', male: 2240, female: 3160 },
-  { label: '85–89', male: 1190, female: 2110 },
-  { label: '90+', male: 520, female: 1480 },
+  { label: '0–4', male: 2311189, female: 2204893 },
+  { label: '5–9', male: 2606651, female: 2482442 },
+  { label: '10–14', male: 2742131, female: 2608386 },
+  { label: '15–19', male: 2880029, female: 2737411 },
+  { label: '20–24', male: 3017869, female: 2913437 },
+  { label: '25–29', male: 3074087, female: 2957877 },
+  { label: '30–34', male: 3297031, female: 3187563 },
+  { label: '35–39', male: 3696855, female: 3614712 },
+  { label: '40–44', male: 4189446, female: 4101631 },
+  { label: '45–49', male: 4862990, female: 4787303 },
+  { label: '50–54', male: 4277003, female: 4262848 },
+  { label: '55–59', male: 3865303, female: 3902179 },
+  { label: '60–64', male: 3592903, female: 3704287 },
+  { label: '65–69', male: 3910060, female: 4165208 },
+  { label: '70–74', male: 4249286, female: 4762509 },
+  { label: '75–79', male: 3092860, female: 3838068 },
+  { label: '80–84', male: 2196093, female: 3100635 },
+  { label: '85+', male: 1896652, female: 4124434 },
 ];
-export const pyramidSource = 'Statistics Bureau of Japan, 2020 Census (thousands, rounded)';
+// People counted in the census totals whose age was not reported: they
+// appear in no age group, so the pyramid bars sum to 123,214,261.
+export const pyramidAgeUnknown = {
+  total: 2931838,
+  male: 1591143,
+  female: 1340695,
+};
+export const pyramidSource = 'Population Census 2020, Table 2-3 (original values), Statistics Bureau of Japan';
 
 // Share of the population aged 65 and over, census years plus 2023 estimate.
 export const ageingTrend = [
@@ -152,21 +167,23 @@ export const vitalSource = 'Ministry of Health, Labour and Welfare, Vital Statis
 // ---------------------------------------------------------------------------
 // Economy.
 // ---------------------------------------------------------------------------
-// Nominal GDP, trillion yen, calendar years (rounded).
+// Nominal GDP, trillion yen, calendar years — the Cabinet Office's
+// current 2020-benchmark series (the older 2015-benchmark series, which
+// put 2024 at ¥609.3 trillion, is superseded and not used here).
 export const gdpTrend = [
-  { year: 2014, trillionYen: 513.9 },
-  { year: 2015, trillionYen: 530.5 },
-  { year: 2016, trillionYen: 544.5 },
-  { year: 2017, trillionYen: 553.1 },
-  { year: 2018, trillionYen: 556.6 },
-  { year: 2019, trillionYen: 556.9 },
-  { year: 2020, trillionYen: 538.0 },
-  { year: 2021, trillionYen: 550.4 },
-  { year: 2022, trillionYen: 566.5 },
-  { year: 2023, trillionYen: 591.7 },
-  { year: 2024, trillionYen: 609.3 },
+  { year: 2014, trillionYen: 528.2 },
+  { year: 2015, trillionYen: 548.9 },
+  { year: 2016, trillionYen: 556.0 },
+  { year: 2017, trillionYen: 565.1 },
+  { year: 2018, trillionYen: 569.2 },
+  { year: 2019, trillionYen: 571.8 },
+  { year: 2020, trillionYen: 554.1 },
+  { year: 2021, trillionYen: 573.7 },
+  { year: 2022, trillionYen: 584.5 },
+  { year: 2023, trillionYen: 616.7 },
+  { year: 2024, trillionYen: 636.9 },
 ];
-export const gdpTrendSource = 'Cabinet Office, National Accounts (nominal GDP, ¥ trillion, rounded)';
+export const gdpTrendSource = 'Cabinet Office, National Accounts (2020 benchmark) — nominal GDP, ¥ trillion';
 
 // Shares of value added by broad sector, percent.
 export const sectorShares = [
@@ -192,10 +209,10 @@ export const priceFacts = [
 export const priceSource = 'Statistics Bureau of Japan, Consumer Price Index, 2024';
 
 export const tradeFacts = {
-  exports: '¥107.1 trillion',
-  imports: '¥112.4 trillion',
-  balance: '−¥5.3 trillion',
-  source: 'Ministry of Finance, Trade Statistics, 2024',
+  exports: '¥107.09 trillion',
+  imports: '¥112.72 trillion',
+  balance: '−¥5.63 trillion',
+  source: 'Ministry of Finance, Trade Statistics of Japan, 2024 (final values)',
   partners: [
     { partner: 'United States', role: 'Largest export market; second-largest source of imports' },
     { partner: 'China', role: 'Largest source of imports; second-largest export market' },
@@ -267,10 +284,10 @@ export const lifeExpectancyTrend = [
   { year: 1990, men: 75.92, women: 81.90 },
   { year: 2000, men: 77.72, women: 84.60 },
   { year: 2010, men: 79.55, women: 86.30 },
-  { year: 2020, men: 81.56, women: 87.74 },
+  { year: 2020, men: 81.56, women: 87.71 },
   { year: 2023, men: 81.09, women: 87.14 },
 ];
-export const lifeExpectancySource = 'Ministry of Health, Labour and Welfare, Abridged Life Tables';
+export const lifeExpectancySource = 'MHLW life tables (complete tables to 2020; abridged table 2023)';
 
 export const healthFacts = [
   { label: 'Doctors', value: '2.6 per 1,000 people', note: 'Practising physicians, OECD comparison, 2022.' },

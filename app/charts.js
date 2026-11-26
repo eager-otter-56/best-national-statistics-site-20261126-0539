@@ -111,9 +111,9 @@ export function dualLineChart({ labels, series, width = 720, height = 300, forma
 
 // Horizontal bars with the value printed at the end of each bar.
 // items: [{ label, value, display }] — display is the printed number.
-export function horizontalBars({ items, width = 720, color = VERMILLION, rowHeight = 30 }) {
+// valueW reserves room for the printed number; widen it for long displays.
+export function horizontalBars({ items, width = 720, color = VERMILLION, rowHeight = 30, valueW = 108 }) {
   const labelW = 118;
-  const valueW = 108;
   const barW = width - labelW - valueW;
   const height = items.length * rowHeight + 8;
   const max = Math.max(...items.map((item) => item.value));
@@ -144,27 +144,34 @@ export function shareBar({ segments, width = 720, height = 44 }) {
 
 // Population pyramid: men extend left (indigo), women right (vermillion).
 // groups are ordered youngest first in data.js and drawn oldest at the top.
+// Values are exact persons; the scale runs to exactly 5,000,000 and each
+// bar end is labelled in millions so the headcount can be read off.
 export function pyramidChart({ groups, width = 720 }) {
-  const rowH = 21;
+  const rowH = 18;
   const labelW = 52;
+  const valueW = 46;
   const centre = width / 2;
-  const halfBar = centre - labelW / 2 - 58;
+  const halfBar = centre - labelW / 2 - valueW;
   const height = groups.length * rowH + 30;
-  const max = Math.max(...groups.flatMap((g) => [g.male, g.female]));
+  const max = 5_000_000;
+  const millions = (n) => `${(n / 1_000_000).toFixed(2)}M`;
   const ordered = [...groups].reverse();
   let out = '';
-  out += `<text x="${centre - halfBar}" y="14" font-size="12" font-weight="700" fill="${INDIGO}">Men</text>`;
-  out += `<text x="${centre + halfBar}" y="14" text-anchor="end" font-size="12" font-weight="700" fill="${VERMILLION}">Women</text>`;
+  out += `<text x="${centre - labelW / 2 - halfBar}" y="14" font-size="12" font-weight="700" fill="${INDIGO}">Men</text>`;
+  out += `<text x="${centre + labelW / 2 + halfBar}" y="14" text-anchor="end" font-size="12" font-weight="700" fill="${VERMILLION}">Women</text>`;
   ordered.forEach((group, i) => {
     const top = 22 + i * rowH;
     const maleW = (group.male / max) * halfBar;
     const femaleW = (group.female / max) * halfBar;
+    const midY = top + rowH / 2 + 2;
     out += `<rect x="${(centre - labelW / 2 - maleW).toFixed(1)}" y="${top}" width="${maleW.toFixed(1)}" height="${rowH - 5}" rx="3" fill="${INDIGO}"/>`;
     out += `<rect x="${centre + labelW / 2}" y="${top}" width="${femaleW.toFixed(1)}" height="${rowH - 5}" rx="3" fill="${VERMILLION}"/>`;
-    out += `<text x="${centre}" y="${top + rowH / 2 + 2}" text-anchor="middle" font-size="11.5" fill="${INK}">${escapeText(group.label)}</text>`;
+    out += `<text x="${(centre - labelW / 2 - maleW - 5).toFixed(1)}" y="${midY}" text-anchor="end" font-size="10.5" fill="${INK}">${millions(group.male)}</text>`;
+    out += `<text x="${(centre + labelW / 2 + femaleW + 5).toFixed(1)}" y="${midY}" font-size="10.5" fill="${INK}">${millions(group.female)}</text>`;
+    out += `<text x="${centre}" y="${midY}" text-anchor="middle" font-size="11.5" fill="${INK}">${escapeText(group.label)}</text>`;
   });
   const axisY = 22 + groups.length * rowH + 2;
-  out += `<text x="${centre - halfBar}" y="${axisY + 12}" font-size="11" fill="${FAINT}">5 million</text>`;
-  out += `<text x="${centre + halfBar}" y="${axisY + 12}" text-anchor="end" font-size="11" fill="${FAINT}">5 million</text>`;
+  out += `<text x="${centre - labelW / 2 - halfBar}" y="${axisY + 12}" font-size="11" fill="${FAINT}">5 million</text>`;
+  out += `<text x="${centre + labelW / 2 + halfBar}" y="${axisY + 12}" text-anchor="end" font-size="11" fill="${FAINT}">5 million</text>`;
   return `<svg viewBox="0 0 ${width} ${height + 16}" role="img" class="chart">${out}</svg>`;
 }
