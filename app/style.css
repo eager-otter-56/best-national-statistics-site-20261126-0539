@@ -1,0 +1,514 @@
+/* style.css — Nippon Statistics Atlas.
+   Deep indigo + vermillion on warm off-white; system fonts only. */
+
+:root {
+  --indigo: #1b2a52;
+  --indigo-soft: #2c4a8a;
+  --vermillion: #e03c31;
+  --paper: #faf7f1;
+  --card: #ffffff;
+  --ink: #26304d;
+  --muted: #6d7387;
+  --line: #e6dfd0;
+  --radius: 14px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Noto Sans JP",
+    "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+  line-height: 1.55;
+}
+
+/* Header + navigation ------------------------------------------------------ */
+.site-header {
+  background: var(--indigo);
+  color: #fff;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  box-shadow: 0 2px 10px rgba(27, 42, 82, 0.25);
+}
+
+.header-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  gap: 22px;
+  flex-wrap: wrap;
+}
+
+.brand {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 800;
+  font-size: 1.12rem;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.brand .brand-mark {
+  display: inline-block;
+  background: var(--vermillion);
+  color: #fff;
+  border-radius: 6px;
+  padding: 0 7px;
+  margin-right: 8px;
+  font-size: 0.95rem;
+}
+
+.site-nav {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.site-nav a {
+  color: #cfd8ef;
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.95rem;
+}
+
+.site-nav a:hover {
+  color: #fff;
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.site-nav a.active {
+  background: var(--vermillion);
+  color: #fff;
+  font-weight: 700;
+}
+
+/* Layout ------------------------------------------------------------------- */
+.page {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 26px 20px 40px;
+}
+
+.hero {
+  padding: 18px 4px 6px;
+}
+
+.hero-kicker {
+  color: var(--vermillion);
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-size: 0.8rem;
+  margin: 0 0 4px;
+}
+
+.hero h1,
+.page-head h1 {
+  font-size: 2.4rem;
+  line-height: 1.15;
+  margin: 0 0 10px;
+  color: var(--indigo);
+}
+
+.hero-lede,
+.page-head p {
+  font-size: 1.06rem;
+  color: #454e68;
+  max-width: 46em;
+  margin: 0;
+}
+
+.page-head {
+  padding: 8px 4px 4px;
+}
+
+/* Headings receive programmatic focus on route changes (see main.js);
+   the focus ring would only add noise there, so it is suppressed for
+   that case only — links and controls keep their visible focus. */
+h1[tabindex="-1"]:focus {
+  outline: none;
+}
+
+/* KPI cards ---------------------------------------------------------------- */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin: 22px 0;
+}
+
+.kpi-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-top: 4px solid var(--indigo-soft);
+  border-radius: var(--radius);
+  padding: 16px 16px 12px;
+}
+
+.kpi-card:nth-child(2),
+.kpi-card:nth-child(7) {
+  border-top-color: var(--vermillion);
+}
+
+.kpi-label {
+  margin: 0;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.kpi-value {
+  margin: 4px 0 6px;
+  font-size: 1.72rem;
+  font-weight: 800;
+  color: var(--indigo);
+  line-height: 1.1;
+}
+
+.kpi-note {
+  margin: 0 0 8px;
+  font-size: 0.9rem;
+  color: #454e68;
+}
+
+.source {
+  margin: 10px 0 0;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.kpi-card .source {
+  margin-top: 0;
+}
+
+/* Panels ------------------------------------------------------------------- */
+.panel {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 20px 22px;
+  margin: 0 0 18px;
+}
+
+.panel h2 {
+  margin: 0 0 12px;
+  font-size: 1.22rem;
+  color: var(--indigo);
+}
+
+.panel-intro {
+  margin: 0 0 10px;
+  color: #454e68;
+  max-width: 46em;
+}
+
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.two-col .panel {
+  margin-bottom: 18px;
+}
+
+.chart {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Glance list + explore links ---------------------------------------------- */
+.glance-list {
+  display: grid;
+  gap: 0;
+}
+
+.glance-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.glance-row:last-child {
+  border-bottom: none;
+}
+
+.glance-label {
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.glance-value {
+  font-weight: 700;
+  color: var(--indigo);
+  text-align: right;
+}
+
+.explore-link {
+  display: block;
+  padding: 11px 2px;
+  border-bottom: 1px solid var(--line);
+  text-decoration: none;
+  color: var(--ink);
+}
+
+.explore-link:last-child {
+  border-bottom: none;
+}
+
+.explore-link strong {
+  display: block;
+  color: var(--indigo-soft);
+  font-size: 1.02rem;
+}
+
+.explore-link span {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.explore-link:hover strong {
+  color: var(--vermillion);
+}
+
+/* Fact rows ------------------------------------------------------------------ */
+.fact-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.fact-row:last-child {
+  border-bottom: none;
+}
+
+.fact-label {
+  margin: 0;
+  font-weight: 700;
+  color: var(--indigo);
+}
+
+.fact-note {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+
+.fact-value {
+  margin: 0;
+  font-size: 1.18rem;
+  font-weight: 800;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+/* Legend --------------------------------------------------------------------- */
+.legend {
+  margin-top: 10px;
+}
+
+.legend-row {
+  margin: 4px 0;
+  font-size: 0.94rem;
+}
+
+.legend-swatch {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  margin-right: 8px;
+}
+
+/* Tables --------------------------------------------------------------------- */
+.mini-table,
+.pref-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.mini-table th,
+.mini-table td,
+.pref-table th,
+.pref-table td {
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+}
+
+.mini-table th,
+.pref-table th {
+  color: var(--muted);
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.num-cell {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.pref-table td.num-cell,
+.pref-table th:nth-child(3) {
+  text-align: right;
+}
+
+.rank-cell {
+  color: var(--muted);
+  width: 2.4em;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+.th-sort {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+}
+
+.th-sort:hover {
+  color: var(--vermillion);
+}
+
+/* Prefecture controls ---------------------------------------------------------- */
+.pref-controls {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  align-items: end;
+  margin-bottom: 6px;
+}
+
+.pref-controls label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--muted);
+  display: grid;
+  gap: 5px;
+}
+
+.pref-search {
+  flex: 1 1 260px;
+}
+
+.pref-controls input,
+.pref-controls select {
+  font: inherit;
+  font-size: 1rem;
+  color: var(--ink);
+  padding: 9px 12px;
+  border: 1.5px solid #c9c2ae;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.pref-controls input:focus,
+.pref-controls select:focus {
+  outline: 3px solid rgba(224, 60, 49, 0.35);
+  border-color: var(--vermillion);
+}
+
+.pref-count {
+  font-size: 0.9rem;
+  color: var(--muted);
+  margin: 4px 0 8px;
+}
+
+/* Trade strip ------------------------------------------------------------------ */
+.trade-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.trade-value {
+  margin: 2px 0 0;
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: var(--indigo);
+}
+
+/* Footer ------------------------------------------------------------------------ */
+.site-footer {
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.footer-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 18px 20px 30px;
+}
+
+/* Phone ------------------------------------------------------------------------- */
+@media (max-width: 860px) {
+  .kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .two-col {
+    grid-template-columns: 1fr;
+  }
+  .hero h1,
+  .page-head h1 {
+    font-size: 1.9rem;
+  }
+}
+
+@media (max-width: 520px) {
+  .header-inner {
+    gap: 10px;
+    padding: 10px 14px;
+  }
+  .site-nav a {
+    padding: 5px 9px;
+    font-size: 0.88rem;
+  }
+  .page {
+    padding: 18px 12px 30px;
+  }
+  .kpi-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .kpi-value {
+    font-size: 1.35rem;
+  }
+  .panel {
+    padding: 16px 14px;
+  }
+  .trade-strip {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+  .fact-value {
+    font-size: 1.05rem;
+  }
+}
