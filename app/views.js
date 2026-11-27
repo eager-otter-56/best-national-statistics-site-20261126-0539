@@ -17,6 +17,8 @@ import {
   ageingSource,
   vitalStats,
   vitalSource,
+  birthsDeathsTrend,
+  birthsDeathsSource,
   gdpTrend,
   gdpTrendSource,
   sectorShares,
@@ -28,6 +30,7 @@ import {
   tradeFacts,
   prefectures,
   prefectureSource,
+  prefectureTiles,
   lifeExpectancyTrend,
   lifeExpectancySource,
   healthFacts,
@@ -131,7 +134,7 @@ export function renderOverview() {
       <h2>Explore the atlas</h2>
       <a class="explore-link" href="#/population"><strong>Population</strong><span>Pyramid, ageing and a century of censuses →</span></a>
       <a class="explore-link" href="#/economy"><strong>Economy</strong><span>GDP, jobs, prices and trade →</span></a>
-      <a class="explore-link" href="#/prefectures"><strong>Prefectures</strong><span>All 47 prefectures — compare any two or three, search and sort the table →</span></a>
+      <a class="explore-link" href="#/prefectures"><strong>Prefectures</strong><span>All 47 prefectures — a tile map of where Japan lives, compare any two or three, search and sort the table →</span></a>
       <a class="explore-link" href="#/life"><strong>Life</strong><span>Health, school, households and working time →</span></a>
     </section>
   </div>`;
@@ -155,6 +158,16 @@ export function renderPopulation() {
     points: ageingTrend.map((p) => ({ label: String(p.year), value: p.share })),
     formatValue: (v) => `${Math.round(v)}%`,
     color: '#e03c31',
+  });
+  const birthsDeaths = dualLineChart({
+    labels: birthsDeathsTrend.map((p) => String(p.year)),
+    series: [
+      { name: 'Births', color: '#2c4a8a', values: birthsDeathsTrend.map((p) => p.births / 1_000_000) },
+      { name: 'Deaths', color: '#e03c31', values: birthsDeathsTrend.map((p) => p.deaths / 1_000_000) },
+    ],
+    formatValue: (v) => (v === 0 ? '0' : `${v.toFixed(1)}M`),
+    yMin: 0,
+    yMax: 2,
   });
   const censusRows = censusTrend
     .filter((p) => p.year % 10 === 0)
@@ -202,6 +215,15 @@ export function renderPopulation() {
     `<p class="panel-intro">In 1970 one Japanese person in fourteen was 65 or older. By 2023 it was
      nearly one in three (29.1%) — the highest share in the world.</p>${ageing}`,
     ageingSource,
+  )}
+
+  ${panel(
+    'Births and deaths, 1970–2024',
+    `<p class="panel-intro">In 1970 Japan recorded 1,934,239 births against 712,962 deaths.
+     Deaths first drew ahead in 2005, and by 2024 there were 1,605,378 deaths to
+     686,173 births — a natural decrease of 919,205 people in a single year, the
+     largest on record.</p>${birthsDeaths}`,
+    birthsDeathsSource,
   )}
 
   ${panel('Births, deaths and marriages, 2023', factRows(vitalStats), vitalSource)}`;
@@ -319,6 +341,44 @@ export function compareResultHtml(names) {
   return `${chart}<div class="legend">${details}</div>`;
 }
 
+// ---------------------------------------------------------------------------
+// Prefecture tile map: one tile per prefecture on the 12 × 11 grid laid
+// out in data.js, shaded by 2020 Census population on a six-step indigo
+// scale. Every tile is labelled with its name and population in millions,
+// and carries the exact headcount in its title and aria-label.
+// ---------------------------------------------------------------------------
+const TILE_SCALE = [
+  { max: 1_000_000, color: '#dfe8f8', dark: false, legend: 'Under 1M' },
+  { max: 2_000_000, color: '#b6c9ec', dark: false, legend: '1–2M' },
+  { max: 4_000_000, color: '#7fa3d9', dark: false, legend: '2–4M' },
+  { max: 7_000_000, color: '#5273b8', dark: true, legend: '4–7M' },
+  { max: 10_000_000, color: '#2c4a8a', dark: true, legend: '7–10M' },
+  { max: Infinity, color: '#16264e', dark: true, legend: 'Over 10M' },
+];
+
+function tileShade(population) {
+  return TILE_SCALE.find((step) => population < step.max) ?? TILE_SCALE[TILE_SCALE.length - 1];
+}
+
+function tileMapHtml() {
+  const tiles = prefectures
+    .map((p) => {
+      const [col, row] = prefectureTiles[p.name];
+      const shade = tileShade(p.population);
+      const label = `${p.name} — ${formatPersons(p.population)} people (2020 Census)`;
+      return `<div class="tile${shade.dark ? ' tile-dark' : ''}" role="listitem" style="grid-column:${col + 1};grid-row:${row + 1};background:${shade.color}" title="${label}" aria-label="${label}"><span class="tile-name">${p.name}</span><span class="tile-pop">${(p.population / 1_000_000).toFixed(1)}M</span></div>`;
+    })
+    .join('');
+  return `<div class="tile-grid" role="list" aria-label="Tile map of Japan's 47 prefectures, shaded by 2020 Census population">${tiles}</div>`;
+}
+
+function tileLegendHtml() {
+  const items = TILE_SCALE.map(
+    (step) => `<span class="map-legend-item"><span class="legend-swatch" style="background:${step.color}"></span>${step.legend}</span>`,
+  ).join('');
+  return `<p class="map-legend">People per prefecture&nbsp;&nbsp;${items}</p>`;
+}
+
 export function renderPrefectures() {
   const top10 = [...prefectures]
     .sort((a, b) => b.population - a.population)
@@ -329,7 +389,9 @@ export function renderPrefectures() {
       value: p.population,
       display: `${(p.population / 1_000_000).toFixed(2)}M`,
     })),
-    rowHeight: 25,
+    width: 400,
+    rowHeight: 30,
+    valueW: 72,
   });
   const byPopulation = [...prefectures].sort((a, b) => b.population - a.population);
   const options = (selected, allowNone) =>
@@ -340,11 +402,30 @@ export function renderPrefectures() {
   return `
   <section class="page-head">
     <h1>Prefectures</h1>
-    <p>All 47 prefectures from the 2020 Census — Tokyo holds 14,047,594 people, Tottori
-    just 553,407. Compare any two or three, or search and sort the table.</p>
+    <p>All 47 prefectures from the 2020 Census — Tokyo holds 14,047,594 people,
+    Tottori just 553,407.</p>
   </section>
 
-  ${panel('The ten largest prefectures', chart, prefectureSource)}
+  <section class="panel">
+    <h2>Where Japan lives: the prefecture tile map</h2>
+    <p class="panel-intro">One tile per prefecture, laid out the way Japan itself is —
+    Hokkaido top right, Okinawa bottom left — and shaded by the people counted
+    there in 2020. Tokyo's single tile holds more people than the 15 smallest
+    prefectures combined.</p>
+    <div class="map-row">
+      <div class="map-main">
+        ${tileMapHtml()}
+        ${tileLegendHtml()}
+      </div>
+      <div class="map-side">
+        <h3>The ten largest prefectures</h3>
+        ${chart}
+        <p class="panel-note">Tokyo, Kanagawa and Osaka together hold 32,122,616
+        people — one resident in four.</p>
+      </div>
+    </div>
+    <p class="source">Source: ${prefectureSource}</p>
+  </section>
 
   <section class="panel">
     <h2>Compare prefectures</h2>

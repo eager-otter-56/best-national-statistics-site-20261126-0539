@@ -435,6 +435,77 @@ h1[tabindex="-1"]:focus {
   color: var(--vermillion);
 }
 
+/* Prefecture tile map --------------------------------------------------------- */
+.map-row {
+  display: grid;
+  grid-template-columns: 1.6fr 0.9fr;
+  gap: 22px;
+  align-items: start;
+}
+
+.map-side h3 {
+  margin: 2px 0 10px;
+  font-size: 1.02rem;
+  color: var(--indigo);
+}
+
+.tile-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 4px;
+}
+
+.tile {
+  border-radius: 6px;
+  aspect-ratio: 1.45;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1px;
+  overflow: hidden;
+  color: var(--ink);
+}
+
+.tile-dark {
+  color: #fff;
+}
+
+.tile-name {
+  font-size: 0.56rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+.tile-pop {
+  font-size: 0.54rem;
+  line-height: 1.1;
+  opacity: 0.85;
+  font-variant-numeric: tabular-nums;
+}
+
+.map-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  align-items: center;
+  margin: 12px 0 0;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.map-legend-item {
+  display: inline-flex;
+  align-items: center;
+}
+
+.map-legend .legend-swatch {
+  border: 1px solid var(--line);
+  margin-right: 5px;
+}
+
 /* Prefecture controls ---------------------------------------------------------- */
 .pref-controls {
   display: flex;
@@ -513,7 +584,8 @@ h1[tabindex="-1"]:focus {
     grid-template-columns: repeat(2, 1fr);
   }
   .two-col,
-  .trend-cols {
+  .trend-cols,
+  .map-row {
     grid-template-columns: 1fr;
   }
   .hero h1,
@@ -550,5 +622,14 @@ h1[tabindex="-1"]:focus {
   }
   .fact-value {
     font-size: 1.05rem;
+  }
+  .tile {
+    border-radius: 4px;
+  }
+  .tile-name {
+    font-size: 0.42rem;
+  }
+  .tile-pop {
+    display: none;
   }
 }

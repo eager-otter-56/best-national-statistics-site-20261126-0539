@@ -164,6 +164,25 @@ export const vitalStats = [
 ];
 export const vitalSource = 'Ministry of Health, Labour and Welfare, Vital Statistics, 2023';
 
+// Births and deaths by year — exact counts from Table 2 (annual series)
+// of the MHLW Vital Statistics final report for 2024. Deaths first
+// outnumbered births in 2005; after a single year back in surplus in
+// 2006, deaths have exceeded births every year since 2007, and the gap
+// widened to 919,205 in 2024.
+export const birthsDeathsTrend = [
+  { year: 1970, births: 1934239, deaths: 712962 },
+  { year: 1980, births: 1576889, deaths: 722801 },
+  { year: 1990, births: 1221585, deaths: 820305 },
+  { year: 2000, births: 1190547, deaths: 961653 },
+  { year: 2005, births: 1062530, deaths: 1083796 },
+  { year: 2010, births: 1071305, deaths: 1197014 },
+  { year: 2015, births: 1005721, deaths: 1290510 },
+  { year: 2020, births: 840835, deaths: 1372755 },
+  { year: 2022, births: 770759, deaths: 1569050 },
+  { year: 2024, births: 686173, deaths: 1605378 },
+];
+export const birthsDeathsSource = 'MHLW, Vital Statistics (final figures), 2024 — Table 2, annual series';
+
 // ---------------------------------------------------------------------------
 // Economy.
 // ---------------------------------------------------------------------------
@@ -276,6 +295,62 @@ export const prefectures = [
   { name: 'Okinawa', population: 1467480, capital: 'Naha', region: 'Kyushu' },
 ];
 export const prefectureSource = 'Statistics Bureau of Japan, 2020 Census';
+
+// Tile-grid position of each prefecture for the tile map in views.js:
+// [column, row] on a 12 × 11 grid, arranged to follow the real geography —
+// Hokkaido at the top right, the Tohoku row beneath it, the Pacific side
+// running down the right, the Sea-of-Japan side down the left, Kyushu at
+// the bottom left and Okinawa in the far south-west corner. The shading
+// uses the census populations above; the coordinates are layout only.
+export const prefectureTiles = {
+  Hokkaido: [11, 0],
+  Aomori: [10, 1],
+  Akita: [9, 2],
+  Iwate: [10, 2],
+  Yamagata: [9, 3],
+  Miyagi: [10, 3],
+  Ishikawa: [6, 4],
+  Toyama: [7, 4],
+  Niigata: [8, 4],
+  Gunma: [9, 4],
+  Fukushima: [10, 4],
+  Fukui: [6, 5],
+  Gifu: [7, 5],
+  Nagano: [8, 5],
+  Saitama: [9, 5],
+  Tochigi: [10, 5],
+  Ibaraki: [11, 5],
+  Shimane: [2, 6],
+  Tottori: [3, 6],
+  Hyogo: [4, 6],
+  Kyoto: [5, 6],
+  Shiga: [6, 6],
+  Yamanashi: [8, 6],
+  Kanagawa: [9, 6],
+  Tokyo: [10, 6],
+  Chiba: [11, 6],
+  Yamaguchi: [1, 7],
+  Hiroshima: [2, 7],
+  Okayama: [3, 7],
+  Osaka: [5, 7],
+  Nara: [6, 7],
+  Aichi: [7, 7],
+  Shizuoka: [8, 7],
+  Saga: [0, 8],
+  Fukuoka: [1, 8],
+  Ehime: [2, 8],
+  Kagawa: [3, 8],
+  Tokushima: [4, 8],
+  Wakayama: [5, 8],
+  Mie: [7, 8],
+  Nagasaki: [0, 9],
+  Kumamoto: [1, 9],
+  Oita: [2, 9],
+  Kochi: [3, 9],
+  Okinawa: [0, 10],
+  Kagoshima: [1, 10],
+  Miyazaki: [2, 10],
+};
 
 // ---------------------------------------------------------------------------
 // Life: health, education, households, work and time.

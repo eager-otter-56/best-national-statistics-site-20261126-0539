@@ -68,9 +68,11 @@ export function lineChart({ points, width = 720, height = 300, color = INDIGO, f
   return `<svg viewBox="0 0 ${width} ${height}" role="img" class="chart">${grid}<path d="${area}" fill="${color}" opacity="0.12"/><path d="${path}" fill="none" stroke="${color}" stroke-width="2.5" stroke-linejoin="round"/>${dots}${labels}</svg>`;
 }
 
-// Two-series line chart (used for men's and women's life expectancy).
-// series: [{ name, color, values: [numbers] }], labels: [x labels].
-export function dualLineChart({ labels, series, width = 720, height = 300, formatValue = (v) => v }) {
+// Two-series line chart (used for men's and women's life expectancy,
+// and for births against deaths). series: [{ name, color, values }],
+// labels: [x labels]. yMin / yMax fix the axis when the caller wants a
+// zero baseline or round bounds; left unset, the axis hugs the data.
+export function dualLineChart({ labels, series, width = 720, height = 300, formatValue = (v) => v, yMin, yMax }) {
   const padLeft = 44;
   const padRight = 16;
   const padTop = 26;
@@ -80,8 +82,8 @@ export function dualLineChart({ labels, series, width = 720, height = 300, forma
   const all = series.flatMap((s) => s.values);
   const rawMin = Math.min(...all);
   const rawMax = Math.max(...all);
-  const minY = Math.floor((rawMin - 2) / 5) * 5;
-  const maxY = Math.ceil((rawMax + 2) / 5) * 5;
+  const minY = yMin ?? Math.floor((rawMin - 2) / 5) * 5;
+  const maxY = yMax ?? Math.ceil((rawMax + 2) / 5) * 5;
   const x = (i) => padLeft + (i / (labels.length - 1)) * innerW;
   const y = (v) => padTop + innerH - ((v - minY) / (maxY - minY)) * innerH;
 
@@ -102,7 +104,9 @@ export function dualLineChart({ labels, series, width = 720, height = 300, forma
       out += `<circle cx="${x(i)}" cy="${y(v)}" r="2.6" fill="${s.color}"/>`;
     });
     const last = s.values[s.values.length - 1];
-    out += `<text x="${x(labels.length - 1) + 6}" y="${y(last) + 4}" font-size="12" font-weight="700" fill="${s.color}">${escapeText(formatValue(last))}</text>`;
+    // The final value sits above its point, anchored to the right edge:
+    // drawn to the right of the point it would spill past the viewBox.
+    out += `<text x="${x(labels.length - 1)}" y="${y(last) - 9}" text-anchor="end" font-size="12" font-weight="700" fill="${s.color}">${escapeText(formatValue(last))}</text>`;
     out += `<circle cx="${padLeft + si * 130}" cy="${10}" r="5" fill="${s.color}"/>`;
     out += `<text x="${padLeft + si * 130 + 10}" y="${14}" font-size="12" fill="${INK}">${escapeText(s.name)}</text>`;
   });
