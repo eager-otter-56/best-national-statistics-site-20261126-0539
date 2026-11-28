@@ -16,6 +16,41 @@
   --radius: 14px;
 }
 
+/* Section colour-coding, census.gov style: every part of the atlas
+   carries its own accent — vermillion for the overview, then teal,
+   moss, indigo and amber — while navy stays the base ink throughout.
+   main.js stamps the route name on <body data-section>, and the
+   kickers, panel rules, badges and the active nav pill follow it. */
+body {
+  --accent: var(--vermillion);
+  --accent-tint: #fdeee9;
+  --accent-border: #f0b3a2;
+}
+
+body[data-section='population'] {
+  --accent: #0f766e;
+  --accent-tint: #e5f3f0;
+  --accent-border: #a5d6cd;
+}
+
+body[data-section='economy'] {
+  --accent: #5c7a1d;
+  --accent-tint: #f0f4e0;
+  --accent-border: #c6d69b;
+}
+
+body[data-section='prefectures'] {
+  --accent: #2c4a8a;
+  --accent-tint: #f2f5fc;
+  --accent-border: #c3cfe8;
+}
+
+body[data-section='life'] {
+  --accent: #b45309;
+  --accent-tint: #fdf2e0;
+  --accent-border: #edcb9a;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -88,7 +123,7 @@ body {
 }
 
 .site-nav a.active {
-  background: var(--vermillion);
+  background: var(--accent, var(--vermillion));
   color: #fff;
   font-weight: 700;
 }
@@ -104,7 +139,7 @@ body {
    the atlas (01 · Population, 02 · Economy, …). */
 .kicker,
 .panel-kicker {
-  color: var(--vermillion);
+  color: var(--accent);
   font-weight: 800;
   letter-spacing: 0.16em;
   text-transform: uppercase;
@@ -124,8 +159,25 @@ body {
   background: var(--indigo);
   color: #fff;
   margin: 0 -20px 16px;
-  padding: 26px 36px 15px;
+  padding: 0 36px 10px;
   border-radius: 0 0 18px 18px;
+}
+
+/* The census.gov move: a real photograph across the top of the cover —
+   the Marunouchi towers over the Imperial Palace plaza — with the
+   navy poster content flowing on below it. The band bleeds to the
+   hero's edges; the file is pre-cropped to a wide strip so it ships
+   small. */
+.hero-photo {
+  margin: 0 -36px;
+}
+
+.hero-photo img {
+  display: block;
+  width: 100%;
+  height: 116px;
+  object-fit: cover;
+  object-position: center 30%;
 }
 
 .hero-kicker {
@@ -134,14 +186,14 @@ body {
   letter-spacing: 0.18em;
   text-transform: uppercase;
   font-size: 0.82rem;
-  margin: 0 0 6px;
+  margin: 12px 0 6px;
 }
 
 .hero h1 {
-  font-size: 3.75rem;
+  font-size: 3.15rem;
   line-height: 1.04;
   letter-spacing: -0.015em;
-  margin: 0 0 10px;
+  margin: 0 0 8px;
   color: #fff;
 }
 
@@ -157,7 +209,7 @@ body {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
-  margin: 16px 0 0;
+  margin: 12px 0 0;
 }
 
 .hero-chip {
@@ -195,22 +247,28 @@ body {
   padding: 16px 4px 2px;
 }
 
+/* The page-head kicker is a <p>, so the .page-head p text colour
+   below would otherwise swallow its section accent. */
+.page-head .kicker {
+  color: var(--accent);
+}
+
 /* Giant census figure + tile map, side by side inside the hero. */
 .hero-figure-row {
   display: grid;
   grid-template-columns: 0.85fr 1.15fr;
   gap: 34px;
   align-items: start;
-  margin-top: 20px;
+  margin-top: 12px;
   border-top: 1px solid rgba(255, 255, 255, 0.22);
-  padding-top: 17px;
+  padding-top: 10px;
 }
 
 /* Cover tiles run a little flatter than the prefectures-page ones so
    the whole map — and a first glimpse of the KPI row — fits the
    cover frame. */
 .hero .tile {
-  aspect-ratio: 1.75;
+  aspect-ratio: 2.25;
 }
 
 .hero-figure-label {
@@ -381,9 +439,9 @@ h1[tabindex="-1"]:focus {
   letter-spacing: 0.12em;
   text-transform: uppercase;
   white-space: nowrap;
-  color: var(--indigo-soft);
-  background: #f2f5fc;
-  border: 1.5px solid #c3cfe8;
+  color: var(--accent);
+  background: var(--accent-tint);
+  border: 1.5px solid var(--accent-border);
   border-radius: 999px;
   padding: 3px 9px;
 }
@@ -411,7 +469,7 @@ h1[tabindex="-1"]:focus {
   width: 34px;
   height: 4px;
   border-radius: 2px;
-  background: var(--vermillion);
+  background: var(--accent);
   margin-bottom: 10px;
 }
 
@@ -500,6 +558,24 @@ h1[tabindex="-1"]:focus {
   display: block;
   color: var(--indigo-soft);
   font-size: 1.02rem;
+}
+
+/* Each explore link wears the colour of the section it leads to —
+   the colour code is learnable from the cover onward. */
+.explore-population strong {
+  color: #0f766e;
+}
+
+.explore-economy strong {
+  color: #5c7a1d;
+}
+
+.explore-prefectures strong {
+  color: #2c4a8a;
+}
+
+.explore-life strong {
+  color: #b45309;
 }
 
 .explore-link span {
@@ -621,7 +697,7 @@ h1[tabindex="-1"]:focus {
 }
 
 .th-sort:hover {
-  color: var(--vermillion);
+  color: var(--accent);
 }
 
 /* Prefecture tile map --------------------------------------------------------- */
@@ -729,8 +805,8 @@ h1[tabindex="-1"]:focus {
 
 .pref-controls input:focus,
 .pref-controls select:focus {
-  outline: 3px solid rgba(224, 60, 49, 0.35);
-  border-color: var(--vermillion);
+  outline: 3px solid var(--accent-border);
+  border-color: var(--accent);
 }
 
 .pref-count {
@@ -819,6 +895,22 @@ h1[tabindex="-1"]:focus {
   padding-bottom: 5px;
 }
 
+/* The QuickFacts groups borrow their sections' colours. */
+.qf-population h3 {
+  color: #0f766e;
+  border-bottom-color: #0f766e;
+}
+
+.qf-economy h3 {
+  color: #5c7a1d;
+  border-bottom-color: #5c7a1d;
+}
+
+.qf-life h3 {
+  color: #b45309;
+  border-bottom-color: #b45309;
+}
+
 .qf-row {
   display: flex;
   justify-content: space-between;
@@ -867,9 +959,30 @@ h1[tabindex="-1"]:focus {
   padding-left: 11px;
 }
 
-.coverage-item:nth-child(2),
-.coverage-item:nth-child(5) {
+/* The coverage strip cycles the section palette — one colour per
+   programme family, kept to a quiet left rule. */
+.coverage-item:nth-child(1) {
+  border-left-color: #0f766e;
+}
+
+.coverage-item:nth-child(2) {
+  border-left-color: #5c7a1d;
+}
+
+.coverage-item:nth-child(3) {
+  border-left-color: #b45309;
+}
+
+.coverage-item:nth-child(4) {
   border-left-color: var(--vermillion);
+}
+
+.coverage-item:nth-child(5) {
+  border-left-color: #0f766e;
+}
+
+.coverage-item:nth-child(6) {
+  border-left-color: #5c7a1d;
 }
 
 .coverage-name {
@@ -936,7 +1049,13 @@ h1[tabindex="-1"]:focus {
     grid-template-columns: 1fr;
   }
   .hero {
-    padding: 26px 24px 26px;
+    padding: 0 24px 20px;
+  }
+  .hero-photo {
+    margin: 0 -24px;
+  }
+  .hero-photo img {
+    height: 128px;
   }
   .hero h1 {
     font-size: 2.7rem;
@@ -960,8 +1079,14 @@ h1[tabindex="-1"]:focus {
   }
   .hero {
     margin: 0 -12px 18px;
-    padding: 22px 18px 22px;
+    padding: 0 18px 20px;
     border-radius: 0 0 14px 14px;
+  }
+  .hero-photo {
+    margin: 0 -18px;
+  }
+  .hero-photo img {
+    height: 102px;
   }
   .ticker {
     margin: 0 -12px 14px;

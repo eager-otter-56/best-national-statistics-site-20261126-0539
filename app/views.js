@@ -156,8 +156,8 @@ function qfRow(label, value, vintage) {
   </div>`;
 }
 
-function qfGroup(title, rows) {
-  return `<div class="qf-group"><h3>${title}</h3>${rows.map((r) => qfRow(r[0], r[1], r[2])).join('')}</div>`;
+function qfGroup(title, rows, section) {
+  return `<div class="qf-group${section ? ` qf-${section}` : ''}"><h3>${title}</h3>${rows.map((r) => qfRow(r[0], r[1], r[2])).join('')}</div>`;
 }
 
 function quickFactsHtml() {
@@ -174,7 +174,7 @@ function quickFactsHtml() {
       ['Households', indicatorValue('Households'), '2020 Census'],
       ['Births', formatPersons(lastVital.births), String(lastVital.year)],
       ['Deaths', formatPersons(lastVital.deaths), String(lastVital.year)],
-    ])}
+    ], 'population')}
     ${qfGroup('Economy', [
       ['GDP (nominal)', indicatorValue('GDP (nominal)'), '2024'],
       ['GDP per capita', indicatorValue('GDP per capita'), '2023'],
@@ -182,7 +182,7 @@ function quickFactsHtml() {
       ['Consumer prices', priceFacts[0].value, '2024 average'],
       ['Exports', tradeFacts.exports, '2024'],
       ['Imports', tradeFacts.imports, '2024'],
-    ])}
+    ], 'economy')}
     ${qfGroup('Life', [
       ['Life expectancy', indicatorValue('Life expectancy'), '2023'],
       ['Median age', indicatorValue('Median age'), '2023'],
@@ -190,7 +190,7 @@ function quickFactsHtml() {
       ['Average household size', householdSize?.value ?? '', '2020 Census'],
       ['Living alone, share of households', livingAlone?.value ?? '', '2020 Census'],
       ['Paid leave taken', paidLeave?.value ?? '', '2023'],
-    ])}
+    ], 'life')}
   </div>
   <p class="qf-foot">Vintages are the reference period of each figure. Every figure above
   appears with its full source in the panels of this atlas.</p>`;
@@ -241,6 +241,7 @@ export function renderOverview() {
 
   return `
   <section class="hero">
+    <div class="hero-photo"><img src="hero-tokyo.jpg" alt="The Marunouchi office towers of Tokyo, seen across the Imperial Palace plaza"></div>
     <p class="hero-kicker">Nippon Statistics Atlas</p>
     <h1>Japan in Numbers</h1>
     <p class="hero-lede">Japan’s people, economy and everyday life, told through official statistics.</p>
@@ -292,10 +293,10 @@ export function renderOverview() {
     ${panel('Japan at a glance', `<div class="glance-list">${glance}</div>`, null, null, 'FACTS · REFERENCE')}
     <section class="panel">
       <h2>Explore the atlas</h2>
-      <a class="explore-link" href="#/population"><strong>Population</strong><span>Pyramid, ageing and a century of censuses →</span></a>
-      <a class="explore-link" href="#/economy"><strong>Economy</strong><span>GDP, jobs, prices and trade →</span></a>
-      <a class="explore-link" href="#/prefectures"><strong>Prefectures</strong><span>All 47 prefectures — a tile map of where Japan lives, compare any two or three, search and sort the table →</span></a>
-      <a class="explore-link" href="#/life"><strong>Life</strong><span>Health, school, households and working time →</span></a>
+      <a class="explore-link explore-population" href="#/population"><strong>Population</strong><span>Pyramid, ageing and a century of censuses →</span></a>
+      <a class="explore-link explore-economy" href="#/economy"><strong>Economy</strong><span>GDP, jobs, prices and trade →</span></a>
+      <a class="explore-link explore-prefectures" href="#/prefectures"><strong>Prefectures</strong><span>All 47 prefectures — a tile map of where Japan lives, compare any two or three, search and sort the table →</span></a>
+      <a class="explore-link explore-life" href="#/life"><strong>Life</strong><span>Health, school, households and working time →</span></a>
     </section>
   </div>
 

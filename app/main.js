@@ -35,6 +35,9 @@ function markActiveNav(routeName) {
 
 function renderRoute() {
   const route = routes[currentPath()];
+  // The section name drives the per-section accent colour in style.css
+  // (each part of the atlas is colour-coded, census.gov style).
+  document.body.dataset.section = route.name;
   app.innerHTML = route.render();
   document.title = route.title;
   markActiveNav(route.name);
