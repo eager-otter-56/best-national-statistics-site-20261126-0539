@@ -240,11 +240,16 @@ export function renderOverview() {
     .join('');
 
   return `
+  <div class="cover-photo">
+    <img src="hero-tokyo.jpg" alt="The Marunouchi office towers of Tokyo, seen across the Imperial Palace plaza">
+    <div class="cover-photo-text">
+      <p class="hero-kicker">Nippon Statistics Atlas</p>
+      <h1>Japan in Numbers</h1>
+      <p class="hero-lede">Japan’s people, economy and everyday life, told through official statistics.</p>
+    </div>
+  </div>
+
   <section class="hero">
-    <div class="hero-photo"><img src="hero-tokyo.jpg" alt="The Marunouchi office towers of Tokyo, seen across the Imperial Palace plaza"></div>
-    <p class="hero-kicker">Nippon Statistics Atlas</p>
-    <h1>Japan in Numbers</h1>
-    <p class="hero-lede">Japan’s people, economy and everyday life, told through official statistics.</p>
     <p class="hero-strip">
       <span class="hero-chip">2020 Census</span>
       <span class="hero-chip">47 prefectures</span>
