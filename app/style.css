@@ -1,15 +1,18 @@
 /* style.css — Nippon Statistics Atlas.
-   Deep indigo + vermillion on warm off-white; system fonts only. */
+   Editorial poster system: deep navy + vermillion on warm paper,
+   oversized display numerals, numbered section kickers.
+   System fonts only. */
 
 :root {
-  --indigo: #1b2a52;
+  --indigo: #14264c;
   --indigo-soft: #2c4a8a;
-  --vermillion: #e03c31;
-  --paper: #faf7f1;
+  --vermillion: #e03a1e;
+  --vermillion-bright: #ff7350;
+  --paper: #faf6ee;
   --card: #ffffff;
-  --ink: #26304d;
+  --ink: #232c47;
   --muted: #6d7387;
-  --line: #e6dfd0;
+  --line: #e7dfcd;
   --radius: 14px;
 }
 
@@ -50,8 +53,8 @@ body {
   color: #fff;
   text-decoration: none;
   font-weight: 800;
-  font-size: 1.12rem;
-  letter-spacing: 0.02em;
+  font-size: 1.22rem;
+  letter-spacing: 0.01em;
   white-space: nowrap;
 }
 
@@ -94,27 +97,59 @@ body {
 .page {
   max-width: 1080px;
   margin: 0 auto;
-  padding: 20px 20px 40px;
+  padding: 0 20px 44px;
 }
 
+/* Section kickers: the numbered small-caps markers that run through
+   the atlas (01 · Population, 02 · Economy, …). */
+.kicker,
+.panel-kicker {
+  color: var(--vermillion);
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-size: 0.82rem;
+  margin: 0 0 6px;
+}
+
+.panel-kicker {
+  font-size: 0.76rem;
+  margin-bottom: 2px;
+}
+
+/* The cover hero: a deep-navy poster band that bleeds to the edges of
+   the page column. Title, one giant census figure, and the prefecture
+   tile map — the whole first impression in a single block. */
 .hero {
-  padding: 10px 4px 2px;
+  background: var(--indigo);
+  color: #fff;
+  margin: 0 -20px 16px;
+  padding: 28px 36px 24px;
+  border-radius: 0 0 18px 18px;
 }
 
 .hero-kicker {
-  color: var(--vermillion);
+  color: var(--vermillion-bright);
   font-weight: 800;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  font-size: 0.8rem;
-  margin: 0 0 4px;
+  font-size: 0.82rem;
+  margin: 0 0 6px;
 }
 
-.hero h1,
+.hero h1 {
+  font-size: 3.75rem;
+  line-height: 1.04;
+  letter-spacing: -0.015em;
+  margin: 0 0 10px;
+  color: #fff;
+}
+
 .page-head h1 {
-  font-size: 2.55rem;
-  line-height: 1.12;
-  margin: 0 0 8px;
+  font-size: 3.3rem;
+  line-height: 1.06;
+  letter-spacing: -0.015em;
+  margin: 0 0 10px;
   color: var(--indigo);
 }
 
@@ -122,12 +157,13 @@ body {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
-  margin: 14px 0 0;
+  margin: 16px 0 0;
 }
 
 .hero-chip {
-  background: var(--indigo);
-  color: #fff;
+  background: transparent;
+  border: 1.5px solid rgba(255, 255, 255, 0.45);
+  color: #eef2fb;
   font-size: 0.82rem;
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -137,9 +173,17 @@ body {
 
 .hero-chip:last-child {
   background: var(--vermillion);
+  border-color: var(--vermillion);
+  color: #fff;
 }
 
-.hero-lede,
+.hero-lede {
+  font-size: 1.08rem;
+  color: #c7d2ec;
+  max-width: 46em;
+  margin: 0;
+}
+
 .page-head p {
   font-size: 1.06rem;
   color: #454e68;
@@ -148,7 +192,81 @@ body {
 }
 
 .page-head {
-  padding: 8px 4px 4px;
+  padding: 16px 4px 2px;
+}
+
+/* Giant census figure + tile map, side by side inside the hero. */
+.hero-figure-row {
+  display: grid;
+  grid-template-columns: 0.85fr 1.15fr;
+  gap: 34px;
+  align-items: start;
+  margin-top: 24px;
+  border-top: 1px solid rgba(255, 255, 255, 0.22);
+  padding-top: 20px;
+}
+
+/* Cover tiles run a little flatter than the prefectures-page ones so
+   the whole map — and a first glimpse of the KPI row — fits the
+   cover frame. */
+.hero .tile {
+  aspect-ratio: 1.75;
+}
+
+.hero-figure-label {
+  margin: 4px 0 2px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #9fb2dd;
+}
+
+.hero-figure-value {
+  margin: 0;
+  font-size: clamp(3.2rem, 6vw, 4.5rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.02;
+  font-variant-numeric: tabular-nums;
+  color: #fff;
+  white-space: nowrap;
+}
+
+.hero-figure-note {
+  margin: 12px 0 0;
+  color: #c7d2ec;
+  max-width: 24em;
+}
+
+.source-on-dark {
+  color: #8fa3cf;
+}
+
+.hero-map-title {
+  margin: 2px 0 10px;
+  font-size: 1.02rem;
+  color: #fff;
+  letter-spacing: 0.01em;
+}
+
+/* On the navy band the tiles need a hairline of light to stay distinct
+   (the darkest shade is the band's own navy), and the legend flips to
+   pale text. */
+.hero .tile {
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
+}
+
+.hero .tile-name {
+  font-size: 0.5rem;
+}
+
+.hero-map .map-legend {
+  color: #aebadd;
+}
+
+.hero-map .map-legend .legend-swatch {
+  border-color: rgba(255, 255, 255, 0.35);
 }
 
 /* Headings receive programmatic focus on route changes (see main.js);
@@ -162,16 +280,16 @@ h1[tabindex="-1"]:focus {
 .kpi-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 12px;
-  margin: 16px 0;
+  gap: 14px;
+  margin: 0 0 18px;
 }
 
 .kpi-card {
   background: var(--card);
   border: 1px solid var(--line);
-  border-top: 4px solid var(--indigo-soft);
+  border-top: 5px solid var(--indigo-soft);
   border-radius: var(--radius);
-  padding: 13px 15px 10px;
+  padding: 15px 16px 12px;
 }
 
 .kpi-card:nth-child(2),
@@ -189,11 +307,13 @@ h1[tabindex="-1"]:focus {
 }
 
 .kpi-value {
-  margin: 4px 0 6px;
-  font-size: 1.58rem;
+  margin: 5px 0 7px;
+  font-size: 1.95rem;
   font-weight: 800;
+  letter-spacing: -0.015em;
+  font-variant-numeric: tabular-nums;
   color: var(--indigo);
-  line-height: 1.1;
+  line-height: 1.08;
 }
 
 .kpi-note {
@@ -216,15 +336,36 @@ h1[tabindex="-1"]:focus {
 .panel {
   background: var(--card);
   border: 1px solid var(--line);
-  border-radius: var(--radius);
-  padding: 20px 22px;
+  border-radius: 16px;
+  padding: 22px 26px;
   margin: 0 0 18px;
 }
 
+/* The pyramid panel caps its chart width so all eighteen rows plus
+   the axis fit a single screen under the page head. */
+.pyramid-wrap {
+  max-width: 840px;
+  margin: 0 auto;
+}
+
+/* Every panel title carries the same short vermillion rule — the
+   editorial signature that ties the sections together. */
 .panel h2 {
-  margin: 0 0 12px;
-  font-size: 1.22rem;
+  margin: 0 0 11px;
+  font-size: 1.5rem;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
   color: var(--indigo);
+}
+
+.panel h2::before {
+  content: '';
+  display: block;
+  width: 34px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--vermillion);
+  margin-bottom: 10px;
 }
 
 .panel-intro {
@@ -351,8 +492,9 @@ h1[tabindex="-1"]:focus {
 
 .fact-value {
   margin: 0;
-  font-size: 1.18rem;
+  font-size: 1.32rem;
   font-weight: 800;
+  font-variant-numeric: tabular-nums;
   color: var(--ink);
   white-space: nowrap;
 }
@@ -445,7 +587,7 @@ h1[tabindex="-1"]:focus {
 
 .map-side h3 {
   margin: 2px 0 10px;
-  font-size: 1.02rem;
+  font-size: 1.12rem;
   color: var(--indigo);
 }
 
@@ -560,8 +702,9 @@ h1[tabindex="-1"]:focus {
 
 .trade-value {
   margin: 2px 0 0;
-  font-size: 1.45rem;
+  font-size: 1.7rem;
   font-weight: 800;
+  font-variant-numeric: tabular-nums;
   color: var(--indigo);
 }
 
@@ -585,12 +728,18 @@ h1[tabindex="-1"]:focus {
   }
   .two-col,
   .trend-cols,
-  .map-row {
+  .map-row,
+  .hero-figure-row {
     grid-template-columns: 1fr;
   }
-  .hero h1,
+  .hero {
+    padding: 26px 24px 26px;
+  }
+  .hero h1 {
+    font-size: 2.7rem;
+  }
   .page-head h1 {
-    font-size: 1.9rem;
+    font-size: 2.5rem;
   }
 }
 
@@ -604,30 +753,58 @@ h1[tabindex="-1"]:focus {
     font-size: 0.88rem;
   }
   .page {
-    padding: 18px 12px 30px;
+    padding: 0 12px 30px;
+  }
+  .hero {
+    margin: 0 -12px 18px;
+    padding: 22px 18px 22px;
+    border-radius: 0 0 14px 14px;
+  }
+  .hero h1 {
+    font-size: 2.35rem;
+  }
+  .page-head {
+    padding-top: 22px;
+  }
+  .page-head h1 {
+    font-size: 2.2rem;
+  }
+  .hero-figure-row {
+    margin-top: 22px;
+    padding-top: 18px;
+    gap: 22px;
   }
   .kpi-grid {
     grid-template-columns: 1fr 1fr;
     gap: 10px;
   }
   .kpi-value {
-    font-size: 1.35rem;
+    font-size: 1.5rem;
   }
   .panel {
-    padding: 16px 14px;
+    padding: 18px 15px;
+  }
+  .panel h2 {
+    font-size: 1.32rem;
   }
   .trade-strip {
     grid-template-columns: 1fr;
     gap: 6px;
   }
   .fact-value {
-    font-size: 1.05rem;
+    font-size: 1.12rem;
   }
   .tile {
     border-radius: 4px;
   }
   .tile-name {
     font-size: 0.42rem;
+  }
+  .hero .tile-name {
+    /* At phone width the cover tiles are ~25px across: long names
+       would clip mid-word, so the cover map reads as a pure shape
+       (the prefectures page keeps its labels). */
+    display: none;
   }
   .tile-pop {
     display: none;

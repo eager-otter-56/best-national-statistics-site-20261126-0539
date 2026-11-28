@@ -44,7 +44,7 @@ import {
 } from './data.js';
 import { lineChart, dualLineChart, horizontalBars, shareBar, pyramidChart } from './charts.js';
 
-const AGE_COLORS = ['#7fa3d9', '#2c4a8a', '#e03c31'];
+const AGE_COLORS = ['#7fa3d9', '#2c4a8a', '#e03a1e'];
 const SECTOR_COLORS = ['#2c4a8a', '#e0a431', '#7fa3d9'];
 
 function formatPersons(n) {
@@ -71,8 +71,9 @@ function factRows(facts) {
     .join('');
 }
 
-function panel(title, bodyHtml, source) {
+function panel(title, bodyHtml, source, kicker) {
   return `<section class="panel">
+    ${kicker ? `<p class="panel-kicker">${kicker}</p>` : ''}
     <h2>${title}</h2>
     ${bodyHtml}
     ${source ? `<p class="source">Source: ${source}</p>` : ''}
@@ -88,7 +89,7 @@ export function renderOverview() {
     points: censusTrend.map((p) => ({ label: String(p.year), value: p.millions })),
     formatValue: (v) => `${Math.round(v)}M`,
     color: '#2c4a8a',
-    height: 190,
+    height: 170,
   });
   const glance = glanceFacts
     .map(
@@ -109,6 +110,20 @@ export function renderOverview() {
       <span class="hero-chip">47 prefectures</span>
       <span class="hero-chip">A source on every figure</span>
     </p>
+    <div class="hero-figure-row">
+      <div class="hero-figure">
+        <p class="hero-figure-label">Population — 2020 Census</p>
+        <p class="hero-figure-value">126,146,099</p>
+        <p class="hero-figure-note">People counted on 1 October 2020 — 61,349,581 men
+        and 64,796,518 women.</p>
+        <p class="source source-on-dark">Source: ${prefectureSource}</p>
+      </div>
+      <div class="hero-map">
+        <h2 class="hero-map-title">Where Japan lives: the prefecture tile map</h2>
+        ${tileMapHtml()}
+        ${tileLegendHtml()}
+      </div>
+    </div>
   </section>
 
   <section class="kpi-grid" aria-label="Headline indicators">${kpis}</section>
@@ -126,6 +141,7 @@ export function renderOverview() {
        <div>${trend}</div>
      </div>`,
     censusTrendSource,
+    'The long view',
   )}
 
   <div class="two-col">
@@ -183,6 +199,7 @@ export function renderPopulation() {
 
   return `
   <section class="page-head">
+    <p class="kicker">01 · Population</p>
     <h1>Population</h1>
     <p>126,146,099 people were counted on 1 October 2020 — 61,349,581 men and 64,796,518
     women — in a pyramid wide at 45–49 and 70–74, narrow at the base.</p>
@@ -190,8 +207,9 @@ export function renderPopulation() {
 
   ${panel(
     'Population pyramid, 2020 Census',
-    `<p class="panel-intro">Every bar is an exact headcount from Table 2-3 of the census — no rounding.</p>${pyramid}${unknownNote}`,
+    `<p class="panel-intro">Every bar is an exact headcount from Table 2-3 of the census — no rounding.</p><div class="pyramid-wrap">${pyramid}</div>${unknownNote}`,
     pyramidSource,
+    'Exact headcounts',
   )}
 
   <div class="two-col">
@@ -224,6 +242,7 @@ export function renderPopulation() {
      686,173 births — a natural decrease of 919,205 people in a single year, the
      largest on record.</p>${birthsDeaths}`,
     birthsDeathsSource,
+    'Natural change',
   )}
 
   ${panel('Births, deaths and marriages, 2023', factRows(vitalStats), vitalSource)}`;
@@ -253,13 +272,14 @@ export function renderEconomy() {
 
   return `
   <section class="page-head">
+    <p class="kicker">02 · Economy</p>
     <h1>Economy</h1>
     <p>Japan's nominal GDP reached a record ¥636.9 trillion in 2024 in the Cabinet Office's
     2020-benchmark National Accounts. Three workers in four are in services, unemployment
     is 2.5%, and prices rose 2.7% in 2024 — fast by Japan's recent standards.</p>
   </section>
 
-  ${panel('Nominal GDP, 2014–2024', gdp, gdpTrendSource)}
+  ${panel('Nominal GDP, 2014–2024', gdp, gdpTrendSource, 'National accounts')}
 
   <div class="two-col">
     ${panel('What the economy makes', `${sectors}<div class="legend">${sectorLegend}</div>`, sectorSource)}
@@ -353,7 +373,7 @@ const TILE_SCALE = [
   { max: 4_000_000, color: '#7fa3d9', dark: false, legend: '2–4M' },
   { max: 7_000_000, color: '#5273b8', dark: true, legend: '4–7M' },
   { max: 10_000_000, color: '#2c4a8a', dark: true, legend: '7–10M' },
-  { max: Infinity, color: '#16264e', dark: true, legend: 'Over 10M' },
+  { max: Infinity, color: '#14264c', dark: true, legend: 'Over 10M' },
 ];
 
 function tileShade(population) {
@@ -401,12 +421,14 @@ export function renderPrefectures() {
 
   return `
   <section class="page-head">
+    <p class="kicker">03 · Prefectures</p>
     <h1>Prefectures</h1>
     <p>All 47 prefectures from the 2020 Census — Tokyo holds 14,047,594 people,
     Tottori just 553,407.</p>
   </section>
 
   <section class="panel">
+    <p class="panel-kicker">One tile per prefecture</p>
     <h2>Where Japan lives: the prefecture tile map</h2>
     <p class="panel-intro">One tile per prefecture, laid out the way Japan itself is —
     Hokkaido top right, Okinawa bottom left — and shaded by the people counted
@@ -428,6 +450,7 @@ export function renderPrefectures() {
   </section>
 
   <section class="panel">
+    <p class="panel-kicker">Side by side</p>
     <h2>Compare prefectures</h2>
     <p class="panel-intro">Pick two or three prefectures and see them side by side —
     bars are scaled to the largest pick, with each one's share of Japan's
@@ -494,6 +517,7 @@ export function renderLife() {
 
   return `
   <section class="page-head">
+    <p class="kicker">04 · Life</p>
     <h1>Life</h1>
     <p>Japanese women live to 87.14 years on average and men to 81.09 — the longest lives
     in the world. Households are shrinking, most school leavers go on to university,
@@ -505,6 +529,7 @@ export function renderLife() {
     `<p class="panel-intro">Women gained about five years and men about five years between
      1990 and 2023 — then both lines dipped after 2020, the first sustained fall in decades.</p>${expectancy}`,
     lifeExpectancySource,
+    'The long life',
   )}
 
   <div class="two-col">

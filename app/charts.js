@@ -2,11 +2,11 @@
 // Every chart is drawn from the numbers in data.js; nothing is an image
 // and nothing is loaded from elsewhere.
 
-const INK = '#26304d';
+const INK = '#232c47';
 const FAINT = '#8a90a6';
 const GRID = '#e3ddcf';
 const INDIGO = '#2c4a8a';
-const VERMILLION = '#e03c31';
+const VERMILLION = '#e03a1e';
 
 function escapeText(text) {
   return String(text)
@@ -125,9 +125,9 @@ export function horizontalBars({ items, width = 720, color = VERMILLION, rowHeig
   items.forEach((item, i) => {
     const top = i * rowHeight + 4;
     const w = Math.max(2, (item.value / max) * barW);
-    out += `<text x="${labelW - 10}" y="${top + rowHeight / 2 + 4}" text-anchor="end" font-size="13" fill="${INK}">${escapeText(item.label)}</text>`;
+    out += `<text x="${labelW - 10}" y="${top + rowHeight / 2 + 5}" text-anchor="end" font-size="14" fill="${INK}">${escapeText(item.label)}</text>`;
     out += `<rect x="${labelW}" y="${top + 4}" width="${w.toFixed(1)}" height="${rowHeight - 10}" rx="4" fill="${color}"/>`;
-    out += `<text x="${labelW + w + 8}" y="${top + rowHeight / 2 + 4}" font-size="12.5" font-weight="700" fill="${INK}">${escapeText(item.display)}</text>`;
+    out += `<text x="${labelW + w + 8}" y="${top + rowHeight / 2 + 5}" font-size="13.5" font-weight="700" fill="${INK}">${escapeText(item.display)}</text>`;
   });
   return `<svg viewBox="0 0 ${width} ${height}" role="img" class="chart">${out}</svg>`;
 }
@@ -151,7 +151,7 @@ export function shareBar({ segments, width = 720, height = 44 }) {
 // Values are exact persons; the scale runs to exactly 5,000,000 and each
 // bar end is labelled in millions so the headcount can be read off.
 export function pyramidChart({ groups, width = 720 }) {
-  const rowH = 18;
+  const rowH = 19;
   const labelW = 52;
   const valueW = 46;
   const centre = width / 2;
@@ -161,20 +161,20 @@ export function pyramidChart({ groups, width = 720 }) {
   const millions = (n) => `${(n / 1_000_000).toFixed(2)}M`;
   const ordered = [...groups].reverse();
   let out = '';
-  out += `<text x="${centre - labelW / 2 - halfBar}" y="14" font-size="12" font-weight="700" fill="${INDIGO}">Men</text>`;
-  out += `<text x="${centre + labelW / 2 + halfBar}" y="14" text-anchor="end" font-size="12" font-weight="700" fill="${VERMILLION}">Women</text>`;
+  out += `<text x="${centre - labelW / 2 - halfBar}" y="15" font-size="14" font-weight="700" fill="${INDIGO}">Men</text>`;
+  out += `<text x="${centre + labelW / 2 + halfBar}" y="15" text-anchor="end" font-size="14" font-weight="700" fill="${VERMILLION}">Women</text>`;
   ordered.forEach((group, i) => {
-    const top = 22 + i * rowH;
+    const top = 24 + i * rowH;
     const maleW = (group.male / max) * halfBar;
     const femaleW = (group.female / max) * halfBar;
-    const midY = top + rowH / 2 + 2;
-    out += `<rect x="${(centre - labelW / 2 - maleW).toFixed(1)}" y="${top}" width="${maleW.toFixed(1)}" height="${rowH - 5}" rx="3" fill="${INDIGO}"/>`;
-    out += `<rect x="${centre + labelW / 2}" y="${top}" width="${femaleW.toFixed(1)}" height="${rowH - 5}" rx="3" fill="${VERMILLION}"/>`;
-    out += `<text x="${(centre - labelW / 2 - maleW - 5).toFixed(1)}" y="${midY}" text-anchor="end" font-size="10.5" fill="${INK}">${millions(group.male)}</text>`;
-    out += `<text x="${(centre + labelW / 2 + femaleW + 5).toFixed(1)}" y="${midY}" font-size="10.5" fill="${INK}">${millions(group.female)}</text>`;
-    out += `<text x="${centre}" y="${midY}" text-anchor="middle" font-size="11.5" fill="${INK}">${escapeText(group.label)}</text>`;
+    const midY = top + rowH / 2 + 4;
+    out += `<rect x="${(centre - labelW / 2 - maleW).toFixed(1)}" y="${top}" width="${maleW.toFixed(1)}" height="${rowH - 6}" rx="3" fill="${INDIGO}"/>`;
+    out += `<rect x="${centre + labelW / 2}" y="${top}" width="${femaleW.toFixed(1)}" height="${rowH - 6}" rx="3" fill="${VERMILLION}"/>`;
+    out += `<text x="${(centre - labelW / 2 - maleW - 5).toFixed(1)}" y="${midY}" text-anchor="end" font-size="12" fill="${INK}">${millions(group.male)}</text>`;
+    out += `<text x="${(centre + labelW / 2 + femaleW + 5).toFixed(1)}" y="${midY}" font-size="12" fill="${INK}">${millions(group.female)}</text>`;
+    out += `<text x="${centre}" y="${midY}" text-anchor="middle" font-size="13" fill="${INK}">${escapeText(group.label)}</text>`;
   });
-  const axisY = 22 + groups.length * rowH + 2;
+  const axisY = 24 + groups.length * rowH + 2;
   out += `<text x="${centre - labelW / 2 - halfBar}" y="${axisY + 12}" font-size="11" fill="${FAINT}">5 million</text>`;
   out += `<text x="${centre + labelW / 2 + halfBar}" y="${axisY + 12}" text-anchor="end" font-size="11" fill="${FAINT}">5 million</text>`;
   return `<svg viewBox="0 0 ${width} ${height + 16}" role="img" class="chart">${out}</svg>`;
