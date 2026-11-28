@@ -271,6 +271,19 @@ body {
 
 .page-head {
   padding: 16px 4px 2px;
+  position: relative;
+}
+
+/* A small map pin in the prefectures page head — the one page whose
+   subject is place itself. */
+.head-motif {
+  position: absolute;
+  top: 22px;
+  right: 6px;
+  width: 30px;
+  height: 30px;
+  fill: var(--accent);
+  opacity: 0.85;
 }
 
 /* The page-head kicker is a <p>, so the .page-head p text colour
@@ -298,6 +311,24 @@ body {
   font-weight: 800;
   letter-spacing: 0.13em;
   text-transform: uppercase;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+/* A quiet trio of person figures at the end of the counter's label
+   row — the tiles themselves stay clean. */
+.counter-people {
+  display: flex;
+  gap: 3px;
+  flex: none;
+}
+
+.counter-person {
+  width: 15px;
+  height: 15px;
+  fill: rgba(255, 255, 255, 0.55);
 }
 
 .counter-digits {
@@ -352,6 +383,64 @@ body {
 
 .dash-economy {
   background: #648521;
+}
+
+/* Two of the cover panels carry a pale illustration behind the type,
+   CBS-watermark style: person figures in the gender panel, rising
+   bars in the GDP panel. The panels clip them; the words sit above. */
+.dash-gender,
+.dash-economy {
+  position: relative;
+  overflow: hidden;
+}
+
+.dash-gender > :not(.gender-wm),
+.dash-economy > :not(.gdp-motif) {
+  position: relative;
+}
+
+.gender-wm {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: end;
+  pointer-events: none;
+}
+
+.gender-wm-fig {
+  width: 108px;
+  height: 108px;
+  fill: rgba(255, 255, 255, 0.13);
+  justify-self: center;
+  margin-bottom: -16px;
+}
+
+.gdp-motif {
+  position: absolute;
+  right: 12px;
+  bottom: 8px;
+  width: 118px;
+  pointer-events: none;
+}
+
+.gdp-motif svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.gdp-motif rect,
+.gdp-motif polygon {
+  fill: rgba(255, 255, 255, 0.16);
+}
+
+.gdp-motif polyline {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.42);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .dash-label {
@@ -414,11 +503,20 @@ body {
   justify-content: flex-end;
 }
 
-.picto-person {
-  width: 17px;
-  height: 17px;
-  fill: #fff;
+/* The figures stand on their bars in a row — one on the births bar,
+   a cluster of three on the deaths bar, echoing the 1 : 2.3 ratio
+   the bars themselves draw. */
+.picto-people {
+  display: flex;
+  gap: 2px;
+  justify-content: center;
   margin-bottom: 3px;
+}
+
+.picto-person {
+  width: 15px;
+  height: 15px;
+  fill: #fff;
 }
 
 .picto-bar {
@@ -547,6 +645,18 @@ h1[tabindex="-1"]:focus {
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+/* Each KPI card wears a small pictogram of what it counts, in the
+   same tone colour as its label. */
+.kpi-icon {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+  flex: none;
 }
 
 .kpi-value {
@@ -825,6 +935,39 @@ h1[tabindex="-1"]:focus {
   margin-right: 8px;
 }
 
+/* Isotype rows: ten person figures, the filled ones carrying the
+   printed share — the oldest trick in statistical illustration. */
+.isotype {
+  margin-top: 14px;
+}
+
+.isotype-text {
+  margin: 0 0 5px;
+  font-size: 0.94rem;
+}
+
+.isotype-row {
+  display: flex;
+  gap: 5px;
+}
+
+.iso-person {
+  width: 23px;
+  height: 23px;
+  fill: #d8dee9;
+  flex: none;
+}
+
+.iso-person.on {
+  fill: var(--accent);
+}
+
+.isotype-note {
+  margin: 8px 0 0;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
 /* Tables --------------------------------------------------------------------- */
 .mini-table,
 .pref-table {
@@ -1003,7 +1146,49 @@ h1[tabindex="-1"]:focus {
   margin: 4px 0 8px;
 }
 
+/* Life-expectancy pulse: a heart and an ECG line in the chart's red,
+   drawn across the panel above the life-expectancy chart. */
+.life-pulse {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 10px;
+}
+
+.pulse-heart {
+  width: 20px;
+  height: 20px;
+  fill: #e03c31;
+  flex: none;
+}
+
+.pulse-line {
+  flex: 1;
+  height: 26px;
+  display: block;
+}
+
+.pulse-line polyline {
+  fill: none;
+  stroke: #e03c31;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
 /* Trade strip ------------------------------------------------------------------ */
+/* The container ship that sails over the trade panel's figures. */
+.trade-ship {
+  text-align: right;
+  margin: -2px 0 8px;
+}
+
+.trade-ship svg {
+  width: 132px;
+  height: 44px;
+}
+
 .trade-strip {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -1391,5 +1576,31 @@ h1[tabindex="-1"]:focus {
   }
   .tile-pop {
     display: none;
+  }
+  /* Illustrations scale down with the phone: smaller isotype
+     figures, a smaller watermark pair and ship, a smaller pin. */
+  .iso-person {
+    width: 19px;
+    height: 19px;
+  }
+  .gender-wm-fig {
+    width: 84px;
+    height: 84px;
+  }
+  .gdp-motif {
+    width: 92px;
+  }
+  .counter-person {
+    width: 13px;
+    height: 13px;
+  }
+  .head-motif {
+    width: 24px;
+    height: 24px;
+    top: 26px;
+  }
+  .trade-ship svg {
+    width: 110px;
+    height: 37px;
   }
 }

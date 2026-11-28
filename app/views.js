@@ -98,11 +98,51 @@ const KPI_TONES = {
   Households: 'teal',
 };
 
+// Flat geometric pictogram icons in the CBS / isotype manner — drawn
+// inline as SVG, filled with the colour of whatever text they sit
+// beside (currentColor). One small set, stamped wherever a card or
+// panel head wants a figure: no icon font, no image files.
+const ICONS = {
+  person:
+    '<circle cx="12" cy="4.8" r="3"/><path d="M12 8.6c-2.6 0-4.2 1.6-4.2 4.1v4h2.8v-3.8h2.8v3.8h2.8v-4c0-2.5-1.6-4.1-4.2-4.1z"/>',
+  bank:
+    '<path d="M12 2.8 22 8H2z"/><rect x="4.3" y="10.2" width="2.5" height="7"/><rect x="10.75" y="10.2" width="2.5" height="7"/><rect x="17.2" y="10.2" width="2.5" height="7"/><rect x="2.4" y="18.6" width="19.2" height="2.4"/>',
+  banknote:
+    '<path fill-rule="evenodd" d="M3.6 6h16.8a1.6 1.6 0 0 1 1.6 1.6v8.8a1.6 1.6 0 0 1-1.6 1.6H3.6A1.6 1.6 0 0 1 2 16.4V7.6A1.6 1.6 0 0 1 3.6 6zm8.4 2.6a3.4 3.4 0 1 0 0 6.8 3.4 3.4 0 0 0 0-6.8z"/>',
+  heart:
+    '<path d="M12 20.6S3.4 15.1 3.4 9.7C3.4 6.9 5.5 5 8 5c1.7 0 3.2.9 4 2.2C12.8 5.9 14.3 5 16 5c2.5 0 4.6 1.9 4.6 4.7 0 5.4-8.6 10.9-8.6 10.9z"/>',
+  hourglass:
+    '<rect x="5" y="2.4" width="14" height="2.2"/><path d="M7 5.6h10c0 3-1.9 4.6-3.5 6.4 1.6 1.8 3.5 3.4 3.5 6.4H7c0-3 1.9-4.6 3.5-6.4C8.9 10.2 7 8.6 7 5.6z"/><rect x="5" y="19.4" width="14" height="2.2"/>',
+  baby:
+    '<circle cx="12" cy="5.6" r="3.5"/><path d="M12 10c-2.4 0-3.9 1.4-3.9 3.7v3.6h2.5v-3h2.8v3h2.5v-3.6C15.9 11.4 14.4 10 12 10z"/>',
+  briefcase:
+    '<path d="M9 7.5V6a3 3 0 0 1 3-3 3 3 0 0 1 3 3v1.5h-2V6a1 1 0 0 0-2 0v1.5H9z"/><rect x="2.6" y="7.5" width="18.8" height="12" rx="1.8"/><rect x="2.6" y="12.2" width="18.8" height="1.7" fill="#fff" opacity=".38"/><rect x="10.7" y="11.7" width="2.6" height="3" rx=".6" fill="#fff" opacity=".9"/>',
+  house: '<path d="M12 2.8 22.2 11.6h-3v9.6h-5.6v-6h-3.2v6H4.8v-9.6h-3z"/>',
+  pin:
+    '<path fill-rule="evenodd" d="M12 2a7 7 0 0 0-7 7c0 5.25 7 13 7 13s7-7.75 7-13a7 7 0 0 0-7-7zm0 9.7a2.7 2.7 0 1 1 0-5.4 2.7 2.7 0 0 1 0 5.4z"/>',
+};
+
+function iconSvg(name, cls) {
+  return `<svg class="${cls}" viewBox="0 0 24 24" aria-hidden="true">${ICONS[name] ?? ''}</svg>`;
+}
+
+// Each KPI card's icon matches what the card counts.
+const KPI_ICONS = {
+  Population: 'person',
+  'GDP (nominal)': 'bank',
+  'GDP per capita': 'banknote',
+  'Life expectancy': 'heart',
+  'Median age': 'hourglass',
+  'Fertility rate': 'baby',
+  'Unemployment rate': 'briefcase',
+  Households: 'house',
+};
+
 function kpiCard(item) {
   const change = kpiChange(item.label);
   const tone = KPI_TONES[item.label] ?? 'indigo';
   return `<article class="kpi-card kpi-tone-${tone}">
-    <p class="kpi-label">${item.label}</p>
+    <p class="kpi-label">${iconSvg(KPI_ICONS[item.label] ?? 'person', 'kpi-icon')}<span>${item.label}</span></p>
     <p class="kpi-value">${item.value}</p>
     ${change ? `<p class="kpi-change kpi-change-${change.dir}">${change.text}</p>` : ''}
     <p class="kpi-note">${item.note}</p>
@@ -246,13 +286,25 @@ function counterPanelHtml() {
     .map((d) => `<span class="digit">${d}</span>`)
     .join('');
   return `<section class="counter-panel" aria-label="Population counter">
-    <p class="counter-label">Population counter — 2020 Census</p>
+    <p class="counter-label"><span>Population counter — 2020 Census</span><span class="counter-people" aria-hidden="true">${personIcon('counter-person')}${personIcon('counter-person', true)}${personIcon('counter-person')}</span></p>
     <div class="counter-digits" role="img" aria-label="${formatPersons(NATIONAL_POPULATION_2020)}">${digits}</div>
     <p class="counter-source">Counted on 1 October 2020 · Source: Statistics Bureau of Japan, 2020 Census</p>
   </section>`;
 }
 
-const PERSON_GLYPH = `<svg class="picto-person" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="4.8" r="3"/><path d="M12 8.6c-2.6 0-4.2 1.6-4.2 4.1v4h2.8v-3.8h2.8v3.8h2.8v-4c0-2.5-1.6-4.1-4.2-4.1z"/></svg>`;
+// Person pictograms — one male and one female silhouette, shared by
+// the cover panels and the isotype rows so the figure stays identical
+// everywhere it appears.
+const PERSON_MALE =
+  '<circle cx="12" cy="4.8" r="3"/><path d="M12 8.6c-2.6 0-4.2 1.6-4.2 4.1v4h2.8v-3.8h2.8v3.8h2.8v-4c0-2.5-1.6-4.1-4.2-4.1z"/>';
+const PERSON_FEMALE =
+  '<circle cx="12" cy="4.8" r="3"/><path d="M12 8.4c-1.1 0-2 .3-2.7 1l-2.5 8.2h3.2V21h1.9v-3.4h.2V21h1.9v-3.4h3.2l-2.5-8.2c-.7-.7-1.6-1-2.7-1z"/>';
+
+function personIcon(cls, female = false) {
+  return `<svg class="${cls}" viewBox="0 0 24 24" aria-hidden="true">${female ? PERSON_FEMALE : PERSON_MALE}</svg>`;
+}
+
+const PERSON_GLYPH = personIcon('picto-person');
 
 function dynamicsPanelHtml() {
   const last = birthsDeathsTrend[birthsDeathsTrend.length - 1];
@@ -262,8 +314,8 @@ function dynamicsPanelHtml() {
     <p class="dash-label">Population dynamics ${last.year}</p>
     <p class="dash-value">−${formatPersons(last.deaths - last.births)}</p>
     <div class="picto-stage" aria-hidden="true">
-      <div class="picto-col">${PERSON_GLYPH}<div class="picto-bar" style="height:${bar(last.births)}px"></div></div>
-      <div class="picto-col">${PERSON_GLYPH}<div class="picto-bar" style="height:${bar(last.deaths)}px"></div></div>
+      <div class="picto-col"><div class="picto-people">${PERSON_GLYPH}</div><div class="picto-bar" style="height:${bar(last.births)}px"></div></div>
+      <div class="picto-col"><div class="picto-people">${PERSON_GLYPH}${PERSON_GLYPH}${PERSON_GLYPH}</div><div class="picto-bar" style="height:${bar(last.deaths)}px"></div></div>
     </div>
     <div class="picto-labels" aria-hidden="true">
       <p class="picto-label">Births<br><strong>${formatPersons(last.births)}</strong></p>
@@ -276,6 +328,7 @@ function dynamicsPanelHtml() {
 
 function genderPanelHtml() {
   return `<section class="dash-panel dash-gender">
+    <div class="gender-wm" aria-hidden="true">${personIcon('gender-wm-fig')}${personIcon('gender-wm-fig', true)}</div>
     <p class="dash-label">Gender — 2020 Census</p>
     <div class="gender-halves">
       <div class="gender-half">
@@ -291,11 +344,17 @@ function genderPanelHtml() {
   </section>`;
 }
 
+// The GDP panel's quiet backdrop: four rising bars and a trend arrow
+// in a pale wash of the panel's own white — the shape of the GDP chart
+// on the economy page, kept behind the figure so the number leads.
+const GDP_MOTIF = `<svg viewBox="0 0 120 72" aria-hidden="true"><rect x="8" y="48" width="20" height="22"/><rect x="36" y="34" width="20" height="36"/><rect x="64" y="20" width="20" height="50"/><rect x="92" y="6" width="20" height="64"/><polyline points="18,42 46,28 74,14 102,3"/><polygon points="94,1 108,0 105,9"/></svg>`;
+
 function economyPanelHtml() {
   const last = gdpTrend[gdpTrend.length - 1];
   const prev = gdpTrend[gdpTrend.length - 2];
   const pct = pctChange(last.trillionYen, prev.trillionYen).toFixed(1);
   return `<section class="dash-panel dash-economy">
+    <div class="gdp-motif" aria-hidden="true">${GDP_MOTIF}</div>
     <p class="dash-label">GDP ${last.year}</p>
     <p class="dash-value dash-value-yen">${indicatorValue('GDP (nominal)')}</p>
     <p class="dash-note dash-note-lead">▲ ${pct}% vs ${prev.year} · Cabinet Office, National Accounts</p>
@@ -382,6 +441,26 @@ export function renderOverview() {
 // ---------------------------------------------------------------------------
 // Population
 // ---------------------------------------------------------------------------
+// Isotype strips in the classic Neurath manner: ten person figures,
+// the share of them filled that matches the printed percentage —
+// icons rounded to whole people, the exact census share and headcount
+// always printed beside the row.
+function isotypeHtml() {
+  const strip = (entry) => {
+    const filled = Math.round(entry.share / 10);
+    const icons = Array.from({ length: 10 }, (_, i) =>
+      personIcon(`iso-person${i < filled ? ' on' : ''}`),
+    ).join('');
+    return `<div class="isotype">
+      <p class="isotype-text"><strong>${entry.label}</strong> — ${entry.persons} people, <strong>${entry.share}%</strong> of everyone counted</p>
+      <div class="isotype-row" role="img" aria-label="${entry.label}: ${entry.share} percent of the population">${icons}</div>
+    </div>`;
+  };
+  return `${strip(ageShares2020[2])}${strip(ageShares2020[0])}
+  <p class="isotype-note">One figure stands for one person in ten, rounded to whole
+  figures — the printed shares are the exact census values.</p>`;
+}
+
 export function renderPopulation() {
   const pyramid = pyramidChart({ groups: pyramidGroups });
   const shares = shareBar({
@@ -451,6 +530,7 @@ export function renderPopulation() {
        ${ageShares2020[2].persons} people (${ageShares2020[2].share}%), against
        ${ageShares2020[0].share}% under 15.</p>
        ${shares}<div class="legend">${legend}${milestones}</div>
+       ${isotypeHtml()}
        <p class="panel-note">These shares use the census's imputed values, which distribute the
        ${formatPersons(pyramidAgeUnknown.total)} people of unreported age; the pyramid above
        shows the original values.</p>`,
@@ -493,6 +573,10 @@ export function renderPopulation() {
 // ---------------------------------------------------------------------------
 // Economy
 // ---------------------------------------------------------------------------
+// A flat container ship for the trade panel head — hull, five
+// containers in the atlas palette, a bridge tower and a wave line.
+const TRADE_SHIP = `<svg viewBox="0 0 132 44" aria-hidden="true"><rect x="37" y="5" width="20" height="9" fill="#e0a431"/><rect x="59" y="5" width="20" height="9" fill="#5273b8"/><rect x="26" y="14" width="20" height="9" fill="#2c4a8a"/><rect x="48" y="14" width="20" height="9" fill="#e03a1e"/><rect x="70" y="14" width="20" height="9" fill="#0f766e"/><rect x="96" y="8" width="9" height="15" fill="#14264c"/><rect x="98.5" y="11" width="4" height="3" fill="#fff"/><rect x="20" y="23" width="92" height="3" fill="#14264c"/><path d="M6 26h120l-9 10H16z" fill="#14264c"/><path d="M2 41q6.5-4 13 0t13 0 13 0 13 0 13 0 13 0 13 0 13 0 13 0" fill="none" stroke="#7fa3d9" stroke-width="2" stroke-linecap="round"/></svg>`;
+
 export function renderEconomy() {
   const gdp = lineChart({
     points: gdpTrend.map((p) => ({ label: String(p.year), value: p.trillionYen })),
@@ -550,7 +634,8 @@ export function renderEconomy() {
 
   ${panel(
     'Trade, 2024',
-    `<div class="trade-strip">
+    `<div class="trade-ship" aria-hidden="true">${TRADE_SHIP}</div>
+     <div class="trade-strip">
        <div><p class="fact-label">Exports</p><p class="trade-value">${tradeFacts.exports}</p></div>
        <div><p class="fact-label">Imports</p><p class="trade-value">${tradeFacts.imports}</p></div>
        <div><p class="fact-label">Balance</p><p class="trade-value">${tradeFacts.balance}</p></div>
@@ -685,6 +770,7 @@ export function renderPrefectures() {
   <section class="page-head">
     <p class="kicker">03 · Prefectures</p>
     <h1>Prefectures</h1>
+    ${iconSvg('pin', 'head-motif')}
     <p>All 47 prefectures from the 2020 Census — Tokyo holds 14,047,594 people,
     Tottori just 553,407.</p>
   </section>
@@ -804,7 +890,8 @@ export function renderLife() {
   ${panel(
     'Life expectancy at birth, 1990–2023',
     `<p class="panel-intro">Women gained about five years and men about five years between
-     1990 and 2023 — then both lines dipped after 2020, the first sustained fall in decades.</p>${expectancy}`,
+     1990 and 2023 — then both lines dipped after 2020, the first sustained fall in decades.</p>
+     <div class="life-pulse" aria-hidden="true">${iconSvg('heart', 'pulse-heart')}<svg class="pulse-line" viewBox="0 0 600 30" preserveAspectRatio="none"><polyline points="0,15 140,15 152,15 160,5 169,25 176,15 320,15 332,15 340,5 349,25 356,15 600,15"/></svg></div>${expectancy}`,
     lifeExpectancySource,
     'The long life',
     'CHART · 1990–2023',
