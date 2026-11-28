@@ -1,0 +1,1606 @@
+/* style.css — Nippon Statistics Atlas.
+   CBS-dashboard system: a clean white ground, deep navy ink, thin
+   hairline rules, oversized calm display numerals and one accent
+   colour per section. The cover photograph is the one big colour
+   moment. System fonts only. */
+
+:root {
+  --indigo: #14264c;
+  --indigo-soft: #2c4a8a;
+  --vermillion: #e03a1e;
+  --vermillion-bright: #ff7350;
+  --paper: #ffffff;
+  --card: #ffffff;
+  --ink: #232c47;
+  --muted: #6d7387;
+  --line: #e2e5ea;
+  --radius: 14px;
+}
+
+/* Section colour-coding, census.gov style: every part of the atlas
+   carries its own accent — vermillion for the overview, then teal,
+   moss, indigo and amber — while navy stays the base ink throughout.
+   main.js stamps the route name on <body data-section>, and the
+   kickers, panel rules, badges and the active nav pill follow it. */
+body {
+  --accent: var(--vermillion);
+  --accent-tint: #fdeee9;
+  --accent-border: #f0b3a2;
+}
+
+body[data-section='population'] {
+  --accent: #0f766e;
+  --accent-tint: #e5f3f0;
+  --accent-border: #a5d6cd;
+}
+
+body[data-section='economy'] {
+  --accent: #5c7a1d;
+  --accent-tint: #f0f4e0;
+  --accent-border: #c6d69b;
+}
+
+body[data-section='prefectures'] {
+  --accent: #2c4a8a;
+  --accent-tint: #f2f5fc;
+  --accent-border: #c3cfe8;
+}
+
+body[data-section='life'] {
+  --accent: #b45309;
+  --accent-tint: #fdf2e0;
+  --accent-border: #edcb9a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Noto Sans JP",
+    "Segoe UI", system-ui, -apple-system, Arial, sans-serif;
+  line-height: 1.55;
+  /* The cover photograph is viewport-width (100vw); clip guards
+     against a classic scrollbar making that a hair too wide. Clip —
+     unlike hidden — creates no scroll container, so the sticky
+     masthead keeps working. */
+  overflow-x: clip;
+}
+
+/* Header + navigation ------------------------------------------------------ */
+/* The masthead is a white bar in the same white system as the pages
+   below it; its 3px navy rule and soft shadow are what keep it
+   reading as a bar. It is a consolidated two-row block: the brand on
+   the first row, then the one-line summary and the section buttons
+   together on the second. */
+.site-header {
+  background: #fff;
+  color: var(--indigo);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  border-bottom: 3px solid var(--indigo);
+  box-shadow: 0 2px 10px rgba(27, 42, 82, 0.12);
+}
+
+.header-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 10px 20px 11px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+}
+
+.brand {
+  color: var(--indigo);
+  text-decoration: none;
+  font-weight: 800;
+  font-size: 1.55rem;
+  letter-spacing: 0.01em;
+  line-height: 1.15;
+  white-space: nowrap;
+}
+
+.brand .brand-mark {
+  display: inline-block;
+  background: var(--vermillion);
+  color: #fff;
+  border-radius: 6px;
+  padding: 1px 8px;
+  margin-right: 9px;
+  font-size: 1.12rem;
+  vertical-align: 2px;
+}
+
+.header-sub {
+  display: flex;
+  align-items: center;
+  gap: 6px 20px;
+  flex-wrap: wrap;
+}
+
+.header-lede {
+  margin: 0;
+  font-size: 0.93rem;
+  color: #454e68;
+}
+
+.site-nav {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.site-nav a {
+  color: #3c4767;
+  text-decoration: none;
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.site-nav a:hover {
+  color: var(--indigo);
+  background: rgba(20, 38, 76, 0.08);
+}
+
+.site-nav a.active {
+  background: var(--accent, var(--vermillion));
+  color: #fff;
+  font-weight: 700;
+}
+
+/* Layout ------------------------------------------------------------------- */
+.page {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 20px 44px;
+}
+
+/* Section kickers: the numbered small-caps markers that run through
+   the atlas (01 · Population, 02 · Economy, …). */
+.kicker,
+.panel-kicker {
+  color: var(--accent);
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  font-size: 0.82rem;
+  margin: 0 0 6px;
+}
+
+.panel-kicker {
+  font-size: 0.76rem;
+  margin-bottom: 2px;
+}
+
+/* The cover photograph: the census.gov move, taken full-bleed — the
+   Marunouchi towers over the Imperial Palace plaza stretch edge to
+   edge across the whole viewport, and the atlas title block sits ON
+   the photograph, over a navy scrim that deepens to the left where
+   the words are. The 100vw / 50% margin pair centres the band on the
+   page column it breaks out of. */
+.cover-photo {
+  position: relative;
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  background: var(--indigo);
+  overflow: hidden;
+}
+
+.cover-photo img {
+  display: block;
+  width: 100%;
+  height: 184px;
+  object-fit: cover;
+  object-position: center 38%;
+}
+
+.cover-photo::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    100deg,
+    rgba(15, 27, 54, 0.88) 0%,
+    rgba(15, 27, 54, 0.68) 44%,
+    rgba(15, 27, 54, 0.24) 70%,
+    rgba(15, 27, 54, 0) 90%
+  );
+}
+
+.cover-photo-text {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 0 36px;
+}
+
+.hero-kicker {
+  color: var(--vermillion-bright);
+  font-weight: 800;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  font-size: 0.82rem;
+  margin: 0 0 6px;
+  text-shadow: 0 1px 10px rgba(10, 20, 40, 0.45);
+}
+
+.cover-photo-text h1 {
+  font-size: 3.3rem;
+  line-height: 1.04;
+  letter-spacing: -0.015em;
+  margin: 0 0 8px;
+  color: #fff;
+  text-shadow: 0 2px 16px rgba(10, 20, 40, 0.4);
+}
+
+.page-head h1 {
+  font-size: 3.3rem;
+  line-height: 1.06;
+  letter-spacing: -0.015em;
+  margin: 0 0 10px;
+  color: var(--indigo);
+}
+
+.hero-lede {
+  font-size: 1.08rem;
+  color: #d9e2f4;
+  max-width: 46em;
+  margin: 0;
+  text-shadow: 0 1px 10px rgba(10, 20, 40, 0.45);
+}
+
+.page-head p {
+  font-size: 1.06rem;
+  color: #454e68;
+  max-width: 46em;
+  margin: 0;
+}
+
+.page-head {
+  padding: 16px 4px 2px;
+  position: relative;
+}
+
+/* A small map pin in the prefectures page head — the one page whose
+   subject is place itself. */
+.head-motif {
+  position: absolute;
+  top: 22px;
+  right: 6px;
+  width: 30px;
+  height: 30px;
+  fill: var(--accent);
+  opacity: 0.85;
+}
+
+/* The page-head kicker is a <p>, so the .page-head p text colour
+   below would otherwise swallow its section accent. */
+.page-head .kicker {
+  color: var(--accent);
+}
+
+/* The CBS-dashboard cover panels (Statistics Netherlands' population
+   dashboard is the model): saturated colour blocks, white type, one
+   huge number each. First the population counter — the census count
+   in individual digit tiles, CBS's signature — then a row of three
+   panels: dynamics, gender, economy. */
+.counter-panel {
+  background: #007d9c;
+  color: #fff;
+  border-radius: var(--radius);
+  padding: 12px 22px 10px;
+  margin: 14px 0 12px;
+}
+
+.counter-label {
+  margin: 0 0 8px;
+  font-size: 0.86rem;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+/* A quiet trio of person figures at the end of the counter's label
+   row — the tiles themselves stay clean. */
+.counter-people {
+  display: flex;
+  gap: 3px;
+  flex: none;
+}
+
+.counter-person {
+  width: 15px;
+  height: 15px;
+  fill: rgba(255, 255, 255, 0.55);
+}
+
+.counter-digits {
+  display: flex;
+  gap: 7px;
+  justify-content: center;
+}
+
+.digit {
+  flex: 1 1 0;
+  max-width: 88px;
+  height: 62px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #00586e;
+  border: 2px solid rgba(255, 255, 255, 0.8);
+  border-radius: 7px;
+  color: #fff;
+  font-size: 2.7rem;
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.counter-source {
+  margin: 8px 0 0;
+  font-size: 0.82rem;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.dash-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin: 0 0 12px;
+}
+
+.dash-panel {
+  border-radius: var(--radius);
+  color: #fff;
+  padding: 13px 18px 11px;
+}
+
+.dash-dynamics {
+  background: #005ea5;
+}
+
+.dash-gender {
+  background: #cf2e1f;
+}
+
+.dash-economy {
+  background: #648521;
+}
+
+/* Two of the cover panels carry a pale illustration behind the type,
+   CBS-watermark style: person figures in the gender panel, rising
+   bars in the GDP panel. The panels clip them; the words sit above. */
+.dash-gender,
+.dash-economy {
+  position: relative;
+  overflow: hidden;
+}
+
+.dash-gender > :not(.gender-wm),
+.dash-economy > :not(.gdp-motif) {
+  position: relative;
+}
+
+.gender-wm {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  align-items: end;
+  pointer-events: none;
+}
+
+.gender-wm-fig {
+  width: 108px;
+  height: 108px;
+  fill: rgba(255, 255, 255, 0.13);
+  justify-self: center;
+  margin-bottom: -16px;
+}
+
+.gdp-motif {
+  position: absolute;
+  right: 12px;
+  bottom: 8px;
+  width: 118px;
+  pointer-events: none;
+}
+
+.gdp-motif svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.gdp-motif rect,
+.gdp-motif polygon {
+  fill: rgba(255, 255, 255, 0.16);
+}
+
+.gdp-motif polyline {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0.42);
+  stroke-width: 3;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.dash-label {
+  margin: 0;
+  font-size: 0.82rem;
+  font-weight: 800;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+}
+
+.dash-value {
+  margin: 5px 0 2px;
+  font-size: 2.6rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.dash-value-yen {
+  font-size: 2.2rem;
+  margin-top: 10px;
+}
+
+.dash-note {
+  margin: 8px 0 0;
+  font-size: 0.83rem;
+  line-height: 1.45;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+.dash-note-lead {
+  font-weight: 700;
+  color: #fff;
+}
+
+.dash-source {
+  margin: 5px 0 0;
+  font-size: 0.72rem;
+  color: rgba(255, 255, 255, 0.78);
+}
+
+/* Population dynamics pictogram: two white bars on a baseline, a
+   small person glyph standing on each — births against deaths. */
+.picto-stage {
+  display: flex;
+  align-items: flex-end;
+  gap: 30px;
+  padding: 0 8px;
+  margin-top: 8px;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.6);
+}
+
+.picto-col {
+  width: 76px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+/* The figures stand on their bars in a row — one on the births bar,
+   a cluster of three on the deaths bar, echoing the 1 : 2.3 ratio
+   the bars themselves draw. */
+.picto-people {
+  display: flex;
+  gap: 2px;
+  justify-content: center;
+  margin-bottom: 3px;
+}
+
+.picto-person {
+  width: 15px;
+  height: 15px;
+  fill: #fff;
+}
+
+.picto-bar {
+  width: 56px;
+  background: #fff;
+  border-radius: 3px 3px 0 0;
+}
+
+.picto-labels {
+  display: flex;
+  gap: 30px;
+  padding: 0 8px;
+}
+
+.picto-label {
+  width: 76px;
+  margin: 6px 0 0;
+  font-size: 0.8rem;
+  line-height: 1.35;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Gender panel: the CBS two-halves treatment — rounded millions,
+   the word, and the ♂ / ♀ glyphs. */
+.gender-halves {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.gender-value {
+  margin: 0;
+  font-size: 2.2rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.05;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.dash-unit {
+  font-size: 0.98rem;
+  font-weight: 700;
+  letter-spacing: 0;
+}
+
+.gender-word {
+  margin: 3px 0 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.gender-glyph {
+  font-size: 1.25rem;
+  opacity: 0.9;
+}
+
+/* Headings receive programmatic focus on route changes (see main.js);
+   the focus ring would only add noise there, so it is suppressed for
+   that case only — links and controls keep their visible focus. */
+h1[tabindex="-1"]:focus {
+  outline: none;
+}
+
+/* KPI cards ---------------------------------------------------------------- */
+.kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  margin: 0 0 18px;
+}
+
+.kpi-card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-top: 5px solid var(--indigo-soft);
+  border-radius: var(--radius);
+  padding: 15px 16px 12px;
+}
+
+/* Tinted heads in the section palette — teal for population and
+   households, moss for the economy cards, amber for life, indigo
+   for work. A wash of colour and a saturated rule, nothing louder. */
+.kpi-tone-teal {
+  background: #eef6f4;
+  border-top-color: #0f766e;
+}
+
+.kpi-tone-teal .kpi-label {
+  color: #0f766e;
+}
+
+.kpi-tone-moss {
+  background: #f3f6e8;
+  border-top-color: #5c7a1d;
+}
+
+.kpi-tone-moss .kpi-label {
+  color: #5c7a1d;
+}
+
+.kpi-tone-amber {
+  background: #fbf3e3;
+  border-top-color: #b45309;
+}
+
+.kpi-tone-amber .kpi-label {
+  color: #b45309;
+}
+
+.kpi-tone-indigo {
+  background: #eef2f9;
+  border-top-color: #2c4a8a;
+}
+
+.kpi-tone-indigo .kpi-label {
+  color: #2c4a8a;
+}
+
+.kpi-label {
+  margin: 0;
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+/* Each KPI card wears a small pictogram of what it counts, in the
+   same tone colour as its label. */
+.kpi-icon {
+  width: 18px;
+  height: 18px;
+  fill: currentColor;
+  flex: none;
+}
+
+.kpi-value {
+  margin: 5px 0 7px;
+  font-size: 1.95rem;
+  font-weight: 800;
+  letter-spacing: -0.015em;
+  font-variant-numeric: tabular-nums;
+  color: var(--indigo);
+  line-height: 1.08;
+}
+
+/* ONS-style change line under the KPI value: the movement, not just
+   the level. Direction carries the colour — indigo up, vermillion down. */
+.kpi-change {
+  margin: 0 0 6px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  font-variant-numeric: tabular-nums;
+}
+
+.kpi-change-up {
+  color: var(--indigo-soft);
+}
+
+.kpi-change-down {
+  color: var(--vermillion);
+}
+
+.kpi-note {
+  margin: 0 0 8px;
+  font-size: 0.9rem;
+  color: #454e68;
+}
+
+.source {
+  margin: 10px 0 0;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+.kpi-card .source {
+  margin-top: 0;
+}
+
+/* Panels ------------------------------------------------------------------- */
+.panel {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 22px 26px;
+  margin: 0 0 18px;
+}
+
+/* Panel header row: kicker + title on the left, a Eurostat-style format
+   badge ("CHART · 2020 CENSUS", "TABLE · 47 PREFECTURES") on the right. */
+.panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 11px;
+}
+
+.panel .panel-head h2 {
+  margin-bottom: 0;
+}
+
+.badge {
+  flex: none;
+  margin-top: 4px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--accent);
+  background: var(--accent-tint);
+  border: 1.5px solid var(--accent-border);
+  border-radius: 999px;
+  padding: 3px 9px;
+}
+
+/* The pyramid panel caps its chart width so all eighteen rows plus
+   the axis fit a single screen under the page head. */
+.pyramid-wrap {
+  max-width: 840px;
+  margin: 0 auto;
+}
+
+/* Every panel title carries the same short vermillion rule — the
+   editorial signature that ties the sections together. */
+.panel h2 {
+  margin: 0 0 11px;
+  font-size: 1.5rem;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  color: var(--indigo);
+}
+
+.panel h2::before {
+  content: '';
+  display: block;
+  width: 34px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--accent);
+  margin-bottom: 10px;
+}
+
+.panel-intro {
+  margin: 0 0 10px;
+  color: #454e68;
+  max-width: 46em;
+}
+
+.panel-note {
+  margin: 12px 0 0;
+  font-size: 0.9rem;
+  color: #454e68;
+  background: #f4f6fa;
+  border-radius: 10px;
+  padding: 9px 12px;
+}
+
+.two-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+/* Overview trend panel: story text beside the chart, so the chart sits
+   high on the page and reads at a glance. */
+.trend-cols {
+  display: grid;
+  grid-template-columns: 0.9fr 1.1fr;
+  gap: 20px;
+  align-items: start;
+}
+
+.two-col .panel {
+  margin-bottom: 18px;
+}
+
+.chart {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+/* Glance list + explore links ---------------------------------------------- */
+.glance-list {
+  display: grid;
+  gap: 0;
+}
+
+.glance-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.glance-row:last-child {
+  border-bottom: none;
+}
+
+.glance-label {
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.glance-value {
+  font-weight: 700;
+  color: var(--indigo);
+  text-align: right;
+}
+
+.explore-link {
+  display: block;
+  padding: 11px 2px;
+  border-bottom: 1px solid var(--line);
+  text-decoration: none;
+  color: var(--ink);
+}
+
+.explore-link:last-child {
+  border-bottom: none;
+}
+
+.explore-link strong {
+  display: block;
+  color: var(--indigo-soft);
+  font-size: 1.02rem;
+}
+
+/* Each explore link wears the colour of the section it leads to —
+   the colour code is learnable from the cover onward. */
+.explore-population strong {
+  color: #0f766e;
+}
+
+.explore-economy strong {
+  color: #5c7a1d;
+}
+
+.explore-prefectures strong {
+  color: #2c4a8a;
+}
+
+.explore-life strong {
+  color: #b45309;
+}
+
+.explore-link span {
+  font-size: 0.9rem;
+  color: var(--muted);
+}
+
+.explore-link:hover strong {
+  color: var(--vermillion);
+}
+
+/* Fact rows ------------------------------------------------------------------ */
+.fact-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 16px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.fact-row:last-child {
+  border-bottom: none;
+}
+
+.fact-label {
+  margin: 0;
+  font-weight: 700;
+  color: var(--indigo);
+}
+
+.fact-note {
+  margin: 0;
+  font-size: 0.88rem;
+  color: var(--muted);
+}
+
+.fact-value {
+  margin: 0;
+  font-size: 1.32rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--ink);
+  white-space: nowrap;
+}
+
+/* Legend --------------------------------------------------------------------- */
+.legend {
+  margin-top: 10px;
+}
+
+.legend-row {
+  margin: 4px 0;
+  font-size: 0.94rem;
+}
+
+.legend-swatch {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  margin-right: 8px;
+}
+
+/* Isotype rows: ten person figures, the filled ones carrying the
+   printed share — the oldest trick in statistical illustration. */
+.isotype {
+  margin-top: 14px;
+}
+
+.isotype-text {
+  margin: 0 0 5px;
+  font-size: 0.94rem;
+}
+
+.isotype-row {
+  display: flex;
+  gap: 5px;
+}
+
+.iso-person {
+  width: 23px;
+  height: 23px;
+  fill: #d8dee9;
+  flex: none;
+}
+
+.iso-person.on {
+  fill: var(--accent);
+}
+
+.isotype-note {
+  margin: 8px 0 0;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+/* Tables --------------------------------------------------------------------- */
+.mini-table,
+.pref-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+.mini-table th,
+.mini-table td,
+.pref-table th,
+.pref-table td {
+  padding: 7px 10px;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+}
+
+.mini-table th,
+.pref-table th {
+  color: var(--muted);
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.num-cell {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  font-weight: 600;
+}
+
+.pref-table td.num-cell,
+.pref-table th:nth-child(3) {
+  text-align: right;
+}
+
+.rank-cell {
+  color: var(--muted);
+  width: 2.4em;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+.th-sort {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+}
+
+.th-sort:hover {
+  color: var(--accent);
+}
+
+/* Prefecture tile map --------------------------------------------------------- */
+.map-row {
+  display: grid;
+  grid-template-columns: 1.6fr 0.9fr;
+  gap: 22px;
+  align-items: start;
+}
+
+.map-side h3 {
+  margin: 2px 0 10px;
+  font-size: 1.12rem;
+  color: var(--indigo);
+}
+
+.tile-grid {
+  display: grid;
+  grid-template-columns: repeat(12, 1fr);
+  gap: 4px;
+}
+
+.tile {
+  border-radius: 6px;
+  aspect-ratio: 1.45;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 1px;
+  overflow: hidden;
+  color: var(--ink);
+  /* On the white ground the lightest shade (#dfe8f8) needs a hairline
+     to stay distinct from the page behind it. */
+  box-shadow: inset 0 0 0 1px rgba(20, 38, 76, 0.16);
+}
+
+.tile-dark {
+  color: #fff;
+}
+
+.tile-name {
+  font-size: 0.56rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+.tile-pop {
+  font-size: 0.54rem;
+  line-height: 1.1;
+  opacity: 0.85;
+  font-variant-numeric: tabular-nums;
+}
+
+.map-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 14px;
+  align-items: center;
+  margin: 12px 0 0;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.map-legend-item {
+  display: inline-flex;
+  align-items: center;
+}
+
+.map-legend .legend-swatch {
+  border: 1px solid var(--line);
+  margin-right: 5px;
+}
+
+/* Prefecture controls ---------------------------------------------------------- */
+.pref-controls {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  align-items: end;
+  margin-bottom: 6px;
+}
+
+.pref-controls label {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--muted);
+  display: grid;
+  gap: 5px;
+}
+
+.pref-search {
+  flex: 1 1 260px;
+}
+
+.pref-controls input,
+.pref-controls select {
+  font: inherit;
+  font-size: 1rem;
+  color: var(--ink);
+  padding: 9px 12px;
+  border: 1.5px solid #c3c9d4;
+  border-radius: 10px;
+  background: #fff;
+}
+
+.pref-controls input:focus,
+.pref-controls select:focus {
+  outline: 3px solid var(--accent-border);
+  border-color: var(--accent);
+}
+
+.pref-count {
+  font-size: 0.9rem;
+  color: var(--muted);
+  margin: 4px 0 8px;
+}
+
+/* Life-expectancy pulse: a heart and an ECG line in the chart's red,
+   drawn across the panel above the life-expectancy chart. */
+.life-pulse {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0 0 10px;
+}
+
+.pulse-heart {
+  width: 20px;
+  height: 20px;
+  fill: #e03c31;
+  flex: none;
+}
+
+.pulse-line {
+  flex: 1;
+  height: 26px;
+  display: block;
+}
+
+.pulse-line polyline {
+  fill: none;
+  stroke: #e03c31;
+  stroke-width: 2.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  vector-effect: non-scaling-stroke;
+}
+
+/* Trade strip ------------------------------------------------------------------ */
+/* The container ship that sails over the trade panel's figures. */
+.trade-ship {
+  text-align: right;
+  margin: -2px 0 8px;
+}
+
+.trade-ship svg {
+  width: 132px;
+  height: 44px;
+}
+
+.trade-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.trade-value {
+  margin: 2px 0 0;
+  font-size: 1.7rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--indigo);
+}
+
+/* Ticker strip: the Destatis / KOSIS band of headline figures that sits
+   between the poster hero and the KPI grid — portal furniture, one dense
+   line of label + value + year. */
+.ticker {
+  margin: 0 -20px 16px;
+  padding: 9px 36px;
+  background: #fff;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  font-size: 0.83rem;
+  line-height: 1.5;
+  color: var(--ink);
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 16px;
+  row-gap: 1px;
+  align-items: baseline;
+}
+
+.ticker-item {
+  white-space: nowrap;
+}
+
+.ticker-label {
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.ticker-item strong {
+  color: var(--indigo);
+  font-variant-numeric: tabular-nums;
+}
+
+.ticker-year {
+  color: var(--muted);
+  font-size: 0.76rem;
+}
+
+.ticker-sep {
+  color: #a7b2cf;
+  margin: 0 -7px;
+}
+
+/* Japan QuickFacts: the Census Bureau's dense grouped fact table —
+   label + exact value + vintage tag, no cards, density as credibility. */
+.qf-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px 30px;
+}
+
+.qf-group h3 {
+  margin: 2px 0 4px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--indigo);
+  border-bottom: 2.5px solid var(--vermillion);
+  padding-bottom: 5px;
+}
+
+/* The QuickFacts groups borrow their sections' colours. */
+.qf-population h3 {
+  color: #0f766e;
+  border-bottom-color: #0f766e;
+}
+
+.qf-economy h3 {
+  color: #5c7a1d;
+  border-bottom-color: #5c7a1d;
+}
+
+.qf-life h3 {
+  color: #b45309;
+  border-bottom-color: #b45309;
+}
+
+.qf-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding: 5.5px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.qf-label {
+  font-size: 0.88rem;
+  color: #454e68;
+}
+
+.qf-vintage {
+  display: block;
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.qf-value {
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--indigo);
+  white-space: nowrap;
+  font-size: 0.95rem;
+}
+
+.qf-foot {
+  margin: 12px 0 0;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+/* Coverage strip: the named official surveys behind the atlas,
+   stat.go.jp-style taxonomy as a colophon block on the cover. */
+.coverage-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px 26px;
+}
+
+.coverage-item {
+  border-left: 3.5px solid var(--indigo-soft);
+  padding-left: 11px;
+}
+
+/* The coverage strip cycles the section palette — one colour per
+   programme family, kept to a quiet left rule. */
+.coverage-item:nth-child(1) {
+  border-left-color: #0f766e;
+}
+
+.coverage-item:nth-child(2) {
+  border-left-color: #5c7a1d;
+}
+
+.coverage-item:nth-child(3) {
+  border-left-color: #b45309;
+}
+
+.coverage-item:nth-child(4) {
+  border-left-color: var(--vermillion);
+}
+
+.coverage-item:nth-child(5) {
+  border-left-color: #0f766e;
+}
+
+.coverage-item:nth-child(6) {
+  border-left-color: #5c7a1d;
+}
+
+.coverage-name {
+  margin: 0;
+  font-weight: 800;
+  color: var(--indigo);
+  font-size: 0.96rem;
+}
+
+.coverage-sub {
+  margin: 1px 0 0;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+/* Footer ------------------------------------------------------------------------ */
+/* The footer is the site's one navy block besides the cover scrim:
+   a deep closing anchor under the white pages. */
+.site-footer {
+  background: var(--indigo);
+  color: #c7d2ec;
+  font-size: 0.85rem;
+}
+
+.site-footer strong {
+  color: #fff;
+}
+
+.footer-inner {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 18px 20px 30px;
+}
+
+.footer-colophon {
+  margin: 10px 0 0;
+  padding-top: 10px;
+  border-top: 1px dashed rgba(255, 255, 255, 0.35);
+  font-size: 0.78rem;
+  line-height: 1.65;
+  color: #aebadd;
+}
+
+.footer-colophon strong {
+  color: #fff;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+}
+
+/* Phone ------------------------------------------------------------------------- */
+@media (max-width: 860px) {
+  .kpi-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .qf-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .coverage-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .ticker {
+    padding: 9px 24px;
+  }
+  .two-col,
+  .trend-cols,
+  .map-row {
+    grid-template-columns: 1fr;
+  }
+  .dash-grid {
+    grid-template-columns: 1fr;
+  }
+  .cover-photo img {
+    height: 210px;
+  }
+  .cover-photo-text {
+    padding: 0 24px;
+  }
+  .cover-photo-text h1 {
+    font-size: 2.6rem;
+  }
+  .page-head h1 {
+    font-size: 2.5rem;
+  }
+}
+
+@media (max-width: 520px) {
+  .header-inner {
+    gap: 6px;
+    padding: 10px 14px;
+  }
+  .brand {
+    font-size: 1.32rem;
+  }
+  .brand .brand-mark {
+    font-size: 0.98rem;
+  }
+  .header-sub {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+  .header-lede {
+    font-size: 0.88rem;
+  }
+  .site-nav a {
+    padding: 5px 9px;
+    font-size: 0.88rem;
+  }
+  .page {
+    padding: 0 12px 30px;
+  }
+  .cover-photo img {
+    height: 236px;
+  }
+  /* The counter's nine digit tiles scale down to the phone's width:
+     smaller tiles, tighter gaps, and the panel padding narrows. */
+  .counter-panel {
+    margin: 12px 0 12px;
+    padding: 13px 14px 11px;
+  }
+  .counter-digits {
+    gap: 4px;
+  }
+  .digit {
+    height: 52px;
+    font-size: 1.55rem;
+    border-width: 1.5px;
+    border-radius: 5px;
+  }
+  .counter-label {
+    font-size: 0.78rem;
+    margin-bottom: 9px;
+  }
+  .counter-source {
+    font-size: 0.76rem;
+  }
+  .dash-value {
+    font-size: 2.4rem;
+  }
+  .dash-value-yen {
+    font-size: 1.9rem;
+  }
+  .gender-value {
+    font-size: 1.85rem;
+  }
+  /* On a narrow screen the title block spans most of the photo's
+     width, so the scrim stays deep much further across. */
+  .cover-photo::after {
+    background: linear-gradient(
+      100deg,
+      rgba(15, 27, 54, 0.92) 0%,
+      rgba(15, 27, 54, 0.82) 55%,
+      rgba(15, 27, 54, 0.45) 85%,
+      rgba(15, 27, 54, 0.25) 100%
+    );
+  }
+  .cover-photo-text {
+    padding: 0 18px;
+  }
+  .cover-photo-text h1 {
+    font-size: 2.1rem;
+  }
+  .hero-kicker {
+    font-size: 0.72rem;
+  }
+  .hero-lede {
+    font-size: 0.95rem;
+  }
+  .ticker {
+    margin: 0 -12px 14px;
+    padding: 8px 18px;
+    font-size: 0.78rem;
+  }
+  .coverage-grid {
+    grid-template-columns: 1fr;
+  }
+  .badge {
+    font-size: 0.6rem;
+    padding: 2px 7px;
+  }
+  .cover-photo-text h1 {
+    font-size: 2.1rem;
+  }
+  .page-head {
+    padding-top: 22px;
+  }
+  .page-head h1 {
+    font-size: 2.2rem;
+  }
+  .kpi-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+  .kpi-value {
+    font-size: 1.5rem;
+  }
+  .panel {
+    padding: 18px 15px;
+  }
+  .panel h2 {
+    font-size: 1.32rem;
+  }
+  .trade-strip {
+    grid-template-columns: 1fr;
+    gap: 6px;
+  }
+  .fact-value {
+    font-size: 1.12rem;
+  }
+  .tile {
+    border-radius: 4px;
+  }
+  .tile-name {
+    font-size: 0.42rem;
+  }
+  .tile-pop {
+    display: none;
+  }
+  /* Illustrations scale down with the phone: smaller isotype
+     figures, a smaller watermark pair and ship, a smaller pin. */
+  .iso-person {
+    width: 19px;
+    height: 19px;
+  }
+  .gender-wm-fig {
+    width: 84px;
+    height: 84px;
+  }
+  .gdp-motif {
+    width: 92px;
+  }
+  .counter-person {
+    width: 13px;
+    height: 13px;
+  }
+  .head-motif {
+    width: 24px;
+    height: 24px;
+    top: 26px;
+  }
+  .trade-ship svg {
+    width: 110px;
+    height: 37px;
+  }
+}
