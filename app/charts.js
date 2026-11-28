@@ -4,7 +4,7 @@
 
 const INK = '#232c47';
 const FAINT = '#8a90a6';
-const GRID = '#e3ddcf';
+const GRID = '#e7eaef';
 const INDIGO = '#2c4a8a';
 const VERMILLION = '#e03a1e';
 

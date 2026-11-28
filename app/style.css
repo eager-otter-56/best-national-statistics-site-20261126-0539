@@ -1,18 +1,19 @@
 /* style.css — Nippon Statistics Atlas.
-   Editorial poster system: deep navy + vermillion on warm paper,
-   oversized display numerals, numbered section kickers.
-   System fonts only. */
+   CBS-dashboard system: a clean white ground, deep navy ink, thin
+   hairline rules, oversized calm display numerals and one accent
+   colour per section. The cover photograph is the one big colour
+   moment. System fonts only. */
 
 :root {
   --indigo: #14264c;
   --indigo-soft: #2c4a8a;
   --vermillion: #e03a1e;
   --vermillion-bright: #ff7350;
-  --paper: #faf6ee;
+  --paper: #ffffff;
   --card: #ffffff;
   --ink: #232c47;
   --muted: #6d7387;
-  --line: #e7dfcd;
+  --line: #e2e5ea;
   --radius: 14px;
 }
 
@@ -70,10 +71,11 @@ body {
 }
 
 /* Header + navigation ------------------------------------------------------ */
-/* The masthead is a warm white bar — deliberately a different colour
-   from the deep-navy band in the middle of the cover below it. It is
-   a consolidated two-row block: the brand on the first row, then the
-   one-line summary and the section buttons together on the second. */
+/* The masthead is a white bar in the same white system as the pages
+   below it; its 3px navy rule and soft shadow are what keep it
+   reading as a bar. It is a consolidated two-row block: the brand on
+   the first row, then the one-line summary and the section buttons
+   together on the second. */
 .site-header {
   background: #fff;
   color: var(--indigo);
@@ -244,15 +246,16 @@ body {
   text-shadow: 0 2px 16px rgba(10, 20, 40, 0.4);
 }
 
-/* The middle band: a deep-navy poster panel that bleeds to the edges
-   of the page column — one giant census figure and the prefecture
-   tile map, directly under the photograph. */
+/* The middle band: a white section that bleeds to the edges of the
+   page column — one giant census figure in navy ink and the
+   prefecture tile map, directly under the photograph. On the white
+   ground the band is separated from what follows by the ticker's
+   hairline rule, not by a colour block. */
 .hero {
-  background: var(--indigo);
-  color: #fff;
+  background: #fff;
+  color: var(--ink);
   margin: 0 -20px 16px;
   padding: 12px 36px 10px;
-  border-radius: 0 0 18px 18px;
 }
 
 .page-head h1 {
@@ -272,8 +275,8 @@ body {
 
 .hero-chip {
   background: transparent;
-  border: 1.5px solid rgba(255, 255, 255, 0.45);
-  color: #eef2fb;
+  border: 1.5px solid #b9c2d4;
+  color: var(--indigo);
   font-size: 0.82rem;
   font-weight: 700;
   letter-spacing: 0.04em;
@@ -319,7 +322,7 @@ body {
   gap: 34px;
   align-items: start;
   margin-top: 12px;
-  border-top: 1px solid rgba(255, 255, 255, 0.22);
+  border-top: 1px solid var(--line);
   padding-top: 8px;
 }
 
@@ -336,7 +339,7 @@ body {
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #9fb2dd;
+  color: var(--muted);
 }
 
 .hero-figure-value {
@@ -346,44 +349,43 @@ body {
   letter-spacing: -0.02em;
   line-height: 1.02;
   font-variant-numeric: tabular-nums;
-  color: #fff;
+  color: var(--indigo);
   white-space: nowrap;
+}
+
+/* The one loud mark in the white figure band: a short vermillion rule
+   under the giant numeral, so the number keeps its poster energy on
+   the white ground. */
+.hero-figure-value::after {
+  content: '';
+  display: block;
+  width: 72px;
+  height: 5px;
+  border-radius: 2px;
+  background: var(--vermillion);
+  margin-top: 12px;
 }
 
 .hero-figure-note {
   margin: 12px 0 0;
-  color: #c7d2ec;
+  color: #454e68;
   max-width: 24em;
 }
 
+/* The hero source line now sits on white like every other source. */
 .source-on-dark {
-  color: #8fa3cf;
+  color: var(--muted);
 }
 
 .hero-map-title {
   margin: 2px 0 10px;
   font-size: 1.02rem;
-  color: #fff;
+  color: var(--indigo);
   letter-spacing: 0.01em;
-}
-
-/* On the navy band the tiles need a hairline of light to stay distinct
-   (the darkest shade is the band's own navy), and the legend flips to
-   pale text. */
-.hero .tile {
-  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.25);
 }
 
 .hero .tile-name {
   font-size: 0.5rem;
-}
-
-.hero-map .map-legend {
-  color: #aebadd;
-}
-
-.hero-map .map-legend .legend-swatch {
-  border-color: rgba(255, 255, 255, 0.35);
 }
 
 /* Headings receive programmatic focus on route changes (see main.js);
@@ -542,7 +544,7 @@ h1[tabindex="-1"]:focus {
   margin: 12px 0 0;
   font-size: 0.9rem;
   color: #454e68;
-  background: #f3eee1;
+  background: #f4f6fa;
   border-radius: 10px;
   padding: 9px 12px;
 }
@@ -789,6 +791,9 @@ h1[tabindex="-1"]:focus {
   padding: 1px;
   overflow: hidden;
   color: var(--ink);
+  /* On the white ground the lightest shade (#dfe8f8) needs a hairline
+     to stay distinct from the page behind it. */
+  box-shadow: inset 0 0 0 1px rgba(20, 38, 76, 0.16);
 }
 
 .tile-dark {
@@ -857,7 +862,7 @@ h1[tabindex="-1"]:focus {
   font-size: 1rem;
   color: var(--ink);
   padding: 9px 12px;
-  border: 1.5px solid #c9c2ae;
+  border: 1.5px solid #c3c9d4;
   border-radius: 10px;
   background: #fff;
 }
@@ -896,8 +901,9 @@ h1[tabindex="-1"]:focus {
 .ticker {
   margin: 0 -20px 16px;
   padding: 9px 36px;
-  background: #eceff7;
-  border-bottom: 1px solid #d4dbee;
+  background: #fff;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
   font-size: 0.83rem;
   line-height: 1.5;
   color: var(--ink);
@@ -1058,10 +1064,16 @@ h1[tabindex="-1"]:focus {
 }
 
 /* Footer ------------------------------------------------------------------------ */
+/* The footer is the site's one navy block besides the cover scrim:
+   a deep closing anchor under the white pages. */
 .site-footer {
-  border-top: 1px solid var(--line);
-  color: var(--muted);
+  background: var(--indigo);
+  color: #c7d2ec;
   font-size: 0.85rem;
+}
+
+.site-footer strong {
+  color: #fff;
 }
 
 .footer-inner {
@@ -1073,14 +1085,14 @@ h1[tabindex="-1"]:focus {
 .footer-colophon {
   margin: 10px 0 0;
   padding-top: 10px;
-  border-top: 1px dashed #d8d2bd;
+  border-top: 1px dashed rgba(255, 255, 255, 0.35);
   font-size: 0.78rem;
   line-height: 1.65;
-  color: var(--muted);
+  color: #aebadd;
 }
 
 .footer-colophon strong {
-  color: var(--indigo);
+  color: #fff;
   letter-spacing: 0.05em;
   text-transform: uppercase;
   font-size: 0.72rem;
@@ -1153,7 +1165,6 @@ h1[tabindex="-1"]:focus {
   .hero {
     margin: 0 -12px 18px;
     padding: 14px 18px 20px;
-    border-radius: 0 0 14px 14px;
   }
   .cover-photo img {
     height: 236px;
