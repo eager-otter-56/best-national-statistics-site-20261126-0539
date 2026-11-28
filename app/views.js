@@ -85,9 +85,23 @@ function kpiChange(label) {
   return null;
 }
 
+// KPI cards wear a tinted head in the colour of the atlas section
+// they belong to — the CBS panel language, kept quiet below the fold.
+const KPI_TONES = {
+  Population: 'teal',
+  'GDP (nominal)': 'moss',
+  'GDP per capita': 'moss',
+  'Life expectancy': 'amber',
+  'Median age': 'amber',
+  'Fertility rate': 'amber',
+  'Unemployment rate': 'indigo',
+  Households: 'teal',
+};
+
 function kpiCard(item) {
   const change = kpiChange(item.label);
-  return `<article class="kpi-card">
+  const tone = KPI_TONES[item.label] ?? 'indigo';
+  return `<article class="kpi-card kpi-tone-${tone}">
     <p class="kpi-label">${item.label}</p>
     <p class="kpi-value">${item.value}</p>
     ${change ? `<p class="kpi-change kpi-change-${change.dir}">${change.text}</p>` : ''}
@@ -220,6 +234,77 @@ function coverageHtml() {
 }
 
 // ---------------------------------------------------------------------------
+// The CBS-dashboard cover: a population counter in digit tiles and a
+// row of saturated panels, in the manner of Statistics Netherlands'
+// population dashboard. Every figure is one the atlas already prints
+// — the counter is the 2020 Census count in counter dress, not a
+// live estimate, and it never ticks.
+// ---------------------------------------------------------------------------
+function counterPanelHtml() {
+  const digits = String(NATIONAL_POPULATION_2020)
+    .split('')
+    .map((d) => `<span class="digit">${d}</span>`)
+    .join('');
+  return `<section class="counter-panel" aria-label="Population counter">
+    <p class="counter-label">Population counter — 2020 Census</p>
+    <div class="counter-digits" role="img" aria-label="${formatPersons(NATIONAL_POPULATION_2020)}">${digits}</div>
+    <p class="counter-source">Counted on 1 October 2020 · Source: Statistics Bureau of Japan, 2020 Census</p>
+  </section>`;
+}
+
+const PERSON_GLYPH = `<svg class="picto-person" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="4.8" r="3"/><path d="M12 8.6c-2.6 0-4.2 1.6-4.2 4.1v4h2.8v-3.8h2.8v3.8h2.8v-4c0-2.5-1.6-4.1-4.2-4.1z"/></svg>`;
+
+function dynamicsPanelHtml() {
+  const last = birthsDeathsTrend[birthsDeathsTrend.length - 1];
+  const maxBar = 40;
+  const bar = (v) => Math.max(6, Math.round((maxBar * v) / last.deaths));
+  return `<section class="dash-panel dash-dynamics">
+    <p class="dash-label">Population dynamics ${last.year}</p>
+    <p class="dash-value">−${formatPersons(last.deaths - last.births)}</p>
+    <div class="picto-stage" aria-hidden="true">
+      <div class="picto-col">${PERSON_GLYPH}<div class="picto-bar" style="height:${bar(last.births)}px"></div></div>
+      <div class="picto-col">${PERSON_GLYPH}<div class="picto-bar" style="height:${bar(last.deaths)}px"></div></div>
+    </div>
+    <div class="picto-labels" aria-hidden="true">
+      <p class="picto-label">Births<br><strong>${formatPersons(last.births)}</strong></p>
+      <p class="picto-label">Deaths<br><strong>${formatPersons(last.deaths)}</strong></p>
+    </div>
+    <p class="dash-note">Natural change — births minus deaths. Deaths first drew ahead in 2005.</p>
+    <p class="dash-source">MHLW, Vital Statistics (final figures), ${last.year}</p>
+  </section>`;
+}
+
+function genderPanelHtml() {
+  return `<section class="dash-panel dash-gender">
+    <p class="dash-label">Gender — 2020 Census</p>
+    <div class="gender-halves">
+      <div class="gender-half">
+        <p class="gender-value">61.3 <span class="dash-unit">million</span></p>
+        <p class="gender-word">men <span class="gender-glyph" aria-hidden="true">♂</span></p>
+      </div>
+      <div class="gender-half">
+        <p class="gender-value">64.8 <span class="dash-unit">million</span></p>
+        <p class="gender-word">women <span class="gender-glyph" aria-hidden="true">♀</span></p>
+      </div>
+    </div>
+    <p class="dash-note">61,349,581 men · 64,796,518 women — 2020 Census</p>
+  </section>`;
+}
+
+function economyPanelHtml() {
+  const last = gdpTrend[gdpTrend.length - 1];
+  const prev = gdpTrend[gdpTrend.length - 2];
+  const pct = pctChange(last.trillionYen, prev.trillionYen).toFixed(1);
+  return `<section class="dash-panel dash-economy">
+    <p class="dash-label">GDP ${last.year}</p>
+    <p class="dash-value dash-value-yen">${indicatorValue('GDP (nominal)')}</p>
+    <p class="dash-note dash-note-lead">▲ ${pct}% vs ${prev.year} · Cabinet Office, National Accounts</p>
+    <p class="dash-note">Calendar ${last.year} — a record high in yen terms, in the
+    Cabinet Office's 2020-benchmark National Accounts.</p>
+  </section>`;
+}
+
+// ---------------------------------------------------------------------------
 // Overview
 // ---------------------------------------------------------------------------
 export function renderOverview() {
@@ -249,27 +334,13 @@ export function renderOverview() {
     </div>
   </div>
 
-  <section class="hero">
-    <p class="hero-strip">
-      <span class="hero-chip">2020 Census</span>
-      <span class="hero-chip">47 prefectures</span>
-      <span class="hero-chip">A source on every figure</span>
-    </p>
-    <div class="hero-figure-row">
-      <div class="hero-figure">
-        <p class="hero-figure-label">Population — 2020 Census</p>
-        <p class="hero-figure-value">126,146,099</p>
-        <p class="hero-figure-note">People counted on 1 October 2020 — 61,349,581 men
-        and 64,796,518 women.</p>
-        <p class="source source-on-dark">Source: ${prefectureSource}</p>
-      </div>
-      <div class="hero-map">
-        <h2 class="hero-map-title">Where Japan lives: the prefecture tile map</h2>
-        ${tileMapHtml()}
-        ${tileLegendHtml()}
-      </div>
-    </div>
-  </section>
+  ${counterPanelHtml()}
+
+  <div class="dash-grid">
+    ${dynamicsPanelHtml()}
+    ${genderPanelHtml()}
+    ${economyPanelHtml()}
+  </div>
 
   ${tickerHtml()}
 
