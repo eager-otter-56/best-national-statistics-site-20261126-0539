@@ -51,10 +51,46 @@ function formatPersons(n) {
   return n.toLocaleString('en-US');
 }
 
+function indicatorValue(label) {
+  return headlineIndicators.find((i) => i.label === label)?.value ?? '';
+}
+
+function pctChange(now, before) {
+  return ((now - before) / before) * 100;
+}
+
+// ONS-style change lines for the KPI cards. Every line is computed from
+// a series that already appears in this atlas — a card whose previous
+// period is nowhere on the site gets no line rather than an invented one.
+function kpiChange(label) {
+  if (label === 'GDP (nominal)') {
+    const last = gdpTrend[gdpTrend.length - 1];
+    const prev = gdpTrend[gdpTrend.length - 2];
+    return { dir: 'up', text: `▲ ${pctChange(last.trillionYen, prev.trillionYen).toFixed(1)}% vs ${prev.year}` };
+  }
+  if (label === 'Population') {
+    // The card's own 1 Oct 2024 estimate (123.8 million, printed in its
+    // note) against the last census point of the census trend.
+    const census2020 = censusTrend[censusTrend.length - 1].millions;
+    const pct = pctChange(123.8, census2020);
+    return { dir: 'down', text: `▼ ${Math.abs(pct).toFixed(1)}% vs 2020 Census` };
+  }
+  if (label === 'Life expectancy') {
+    const first = lifeExpectancyTrend[0];
+    const last = lifeExpectancyTrend[lifeExpectancyTrend.length - 1];
+    const men = (last.men - first.men).toFixed(1);
+    const women = (last.women - first.women).toFixed(1);
+    return { dir: 'up', text: `▲ ${men} yrs (men) · ${women} yrs (women) since ${first.year}` };
+  }
+  return null;
+}
+
 function kpiCard(item) {
+  const change = kpiChange(item.label);
   return `<article class="kpi-card">
     <p class="kpi-label">${item.label}</p>
     <p class="kpi-value">${item.value}</p>
+    ${change ? `<p class="kpi-change kpi-change-${change.dir}">${change.text}</p>` : ''}
     <p class="kpi-note">${item.note}</p>
     <p class="source">Source: ${item.source}</p>
   </article>`;
@@ -71,13 +107,116 @@ function factRows(facts) {
     .join('');
 }
 
-function panel(title, bodyHtml, source, kicker) {
+function panel(title, bodyHtml, source, kicker, badge) {
   return `<section class="panel">
-    ${kicker ? `<p class="panel-kicker">${kicker}</p>` : ''}
-    <h2>${title}</h2>
+    <div class="panel-head">
+      <div class="panel-head-text">
+        ${kicker ? `<p class="panel-kicker">${kicker}</p>` : ''}
+        <h2>${title}</h2>
+      </div>
+      ${badge ? `<span class="badge">${badge}</span>` : ''}
+    </div>
     ${bodyHtml}
     ${source ? `<p class="source">Source: ${source}</p>` : ''}
   </section>`;
+}
+
+// ---------------------------------------------------------------------------
+// Cover furniture borrowed from the big statistics portals: a Destatis /
+// KOSIS-style ticker of headline figures, and a Census-QuickFacts-style
+// dense reference table. Every value is one the atlas already prints.
+// ---------------------------------------------------------------------------
+function tickerHtml() {
+  const lastVital = birthsDeathsTrend[birthsDeathsTrend.length - 1];
+  const items = [
+    ['Population', '126,146,099', '2020 Census'],
+    ['GDP', indicatorValue('GDP (nominal)'), '2024'],
+    ['Unemployment', indicatorValue('Unemployment rate'), '2024'],
+    ['Life expectancy', indicatorValue('Life expectancy'), '2023'],
+    ['Births', formatPersons(lastVital.births), String(lastVital.year)],
+    ['Deaths', formatPersons(lastVital.deaths), String(lastVital.year)],
+    ['Consumer prices', priceFacts[0].value, '2024'],
+    ['Fertility rate', indicatorValue('Fertility rate'), '2023'],
+    ['Households', indicatorValue('Households'), '2020'],
+    ['Prefectures', glanceFacts.find((f) => f.label === 'Prefectures')?.value ?? '47', ''],
+  ];
+  const body = items
+    .map(
+      ([label, value, year]) =>
+        `<span class="ticker-item"><span class="ticker-label">${label}</span> <strong>${value}</strong>${year ? ` <span class="ticker-year">${year}</span>` : ''}</span>`,
+    )
+    .join('<span class="ticker-sep" aria-hidden="true">·</span>');
+  return `<div class="ticker" aria-label="Headline statistics">${body}</div>`;
+}
+
+function qfRow(label, value, vintage) {
+  return `<div class="qf-row">
+    <span class="qf-label">${label}<span class="qf-vintage">${vintage}</span></span>
+    <span class="qf-value">${value}</span>
+  </div>`;
+}
+
+function qfGroup(title, rows) {
+  return `<div class="qf-group"><h3>${title}</h3>${rows.map((r) => qfRow(r[0], r[1], r[2])).join('')}</div>`;
+}
+
+function quickFactsHtml() {
+  const lastVital = birthsDeathsTrend[birthsDeathsTrend.length - 1];
+  const aged65 = ageShares2020[2];
+  const householdSize = householdFacts.find((f) => f.label === 'Average household size');
+  const livingAlone = householdFacts.find((f) => f.label === 'Living alone');
+  const paidLeave = workFacts.find((f) => f.label === 'Paid leave taken');
+  return `<div class="qf-grid">
+    ${qfGroup('Population', [
+      ['Census population', '126,146,099', '2020 Census'],
+      ['Population estimate', '123.8 million', 'Oct 2024'],
+      ['Aged 65 and over', `${aged65.persons} (${aged65.share}%)`, '2020 Census'],
+      ['Households', indicatorValue('Households'), '2020 Census'],
+      ['Births', formatPersons(lastVital.births), String(lastVital.year)],
+      ['Deaths', formatPersons(lastVital.deaths), String(lastVital.year)],
+    ])}
+    ${qfGroup('Economy', [
+      ['GDP (nominal)', indicatorValue('GDP (nominal)'), '2024'],
+      ['GDP per capita', indicatorValue('GDP per capita'), '2023'],
+      ['Unemployment rate', indicatorValue('Unemployment rate'), '2024 average'],
+      ['Consumer prices', priceFacts[0].value, '2024 average'],
+      ['Exports', tradeFacts.exports, '2024'],
+      ['Imports', tradeFacts.imports, '2024'],
+    ])}
+    ${qfGroup('Life', [
+      ['Life expectancy', indicatorValue('Life expectancy'), '2023'],
+      ['Median age', indicatorValue('Median age'), '2023'],
+      ['Fertility rate', indicatorValue('Fertility rate'), '2023'],
+      ['Average household size', householdSize?.value ?? '', '2020 Census'],
+      ['Living alone, share of households', livingAlone?.value ?? '', '2020 Census'],
+      ['Paid leave taken', paidLeave?.value ?? '', '2023'],
+    ])}
+  </div>
+  <p class="qf-foot">Vintages are the reference period of each figure. Every figure above
+  appears with its full source in the panels of this atlas.</p>`;
+}
+
+function coverageHtml() {
+  const items = [
+    ['Population Census', 'Statistics Bureau of Japan · 2020'],
+    ['National Accounts', 'Cabinet Office · 2020 benchmark'],
+    ['Vital Statistics & life tables', 'Ministry of Health, Labour and Welfare · 2023–2024'],
+    ['Trade Statistics of Japan', 'Ministry of Finance · 2024'],
+    ['Labour Force Survey', 'Statistics Bureau of Japan · 2024'],
+    ['Consumer Price Index', 'Statistics Bureau of Japan · 2024'],
+  ];
+  const grid = items
+    .map(
+      ([name, sub]) => `<div class="coverage-item">
+        <p class="coverage-name">${name}</p>
+        <p class="coverage-sub">${sub}</p>
+      </div>`,
+    )
+    .join('');
+  return `<p class="panel-intro">No figures of our own and nothing estimated silently:
+  every number in this atlas is drawn from a published official survey, and each
+  panel names its source and year.</p>
+  <div class="coverage-grid">${grid}</div>`;
 }
 
 // ---------------------------------------------------------------------------
@@ -126,6 +265,8 @@ export function renderOverview() {
     </div>
   </section>
 
+  ${tickerHtml()}
+
   <section class="kpi-grid" aria-label="Headline indicators">${kpis}</section>
 
   ${panel(
@@ -142,10 +283,13 @@ export function renderOverview() {
      </div>`,
     censusTrendSource,
     'The long view',
+    'CHART · 1920–2020',
   )}
 
+  ${panel('Japan QuickFacts', quickFactsHtml(), null, 'Reference table', 'TABLE · VINTAGES AS SHOWN')}
+
   <div class="two-col">
-    ${panel('Japan at a glance', `<div class="glance-list">${glance}</div>`)}
+    ${panel('Japan at a glance', `<div class="glance-list">${glance}</div>`, null, null, 'FACTS · REFERENCE')}
     <section class="panel">
       <h2>Explore the atlas</h2>
       <a class="explore-link" href="#/population"><strong>Population</strong><span>Pyramid, ageing and a century of censuses →</span></a>
@@ -153,7 +297,9 @@ export function renderOverview() {
       <a class="explore-link" href="#/prefectures"><strong>Prefectures</strong><span>All 47 prefectures — a tile map of where Japan lives, compare any two or three, search and sort the table →</span></a>
       <a class="explore-link" href="#/life"><strong>Life</strong><span>Health, school, households and working time →</span></a>
     </section>
-  </div>`;
+  </div>
+
+  ${panel("Built from Japan's official statistics", coverageHtml(), null, 'Coverage', 'SURVEYS · AS CITED')}`;
 }
 
 // ---------------------------------------------------------------------------
@@ -189,6 +335,14 @@ export function renderPopulation() {
     .filter((p) => p.year % 10 === 0)
     .map((p) => `<tr><td>${p.year}</td><td>${p.millions.toFixed(2)} million</td></tr>`)
     .join('');
+  // Sentence-headline for the pyramid panel, computed from the pyramid's
+  // own groups: the widest five-year group against the base group.
+  const widestGroup = pyramidGroups.reduce((a, b) => (a.male + a.female > b.male + b.female ? a : b));
+  const baseGroup = pyramidGroups[0];
+  const pyramidHeadline = `Two baby booms shape the pyramid: the ${widestGroup.label} group counts
+    ${formatPersons(widestGroup.male + widestGroup.female)} people — more than twice the
+    ${formatPersons(baseGroup.male + baseGroup.female)} children aged ${baseGroup.label} at the base.
+    Every bar is an exact headcount from Table 2-3 of the census — no rounding.`;
 
   const milestones = ageMilestones2020
     .map((m) => `<p class="legend-row"><strong>${m.label}</strong> — ${m.persons} people</p>`)
@@ -207,24 +361,32 @@ export function renderPopulation() {
 
   ${panel(
     'Population pyramid, 2020 Census',
-    `<p class="panel-intro">Every bar is an exact headcount from Table 2-3 of the census — no rounding.</p><div class="pyramid-wrap">${pyramid}</div>${unknownNote}`,
+    `<p class="panel-intro">${pyramidHeadline}</p><div class="pyramid-wrap">${pyramid}</div>${unknownNote}`,
     pyramidSource,
     'Exact headcounts',
+    'CHART · 2020 CENSUS',
   )}
 
   <div class="two-col">
     ${panel(
       'Three generations, 2020',
-      `${shares}<div class="legend">${legend}${milestones}</div>
+      `<p class="panel-intro">More than one resident in four is 65 or over —
+       ${ageShares2020[2].persons} people (${ageShares2020[2].share}%), against
+       ${ageShares2020[0].share}% under 15.</p>
+       ${shares}<div class="legend">${legend}${milestones}</div>
        <p class="panel-note">These shares use the census's imputed values, which distribute the
        ${formatPersons(pyramidAgeUnknown.total)} people of unreported age; the pyramid above
        shows the original values.</p>`,
       ageSharesSource,
+      null,
+      'CHART · 2020 CENSUS',
     )}
     ${panel(
       'Census totals, every ten years',
       `<table class="mini-table"><thead><tr><th>Census</th><th>Population</th></tr></thead><tbody>${censusRows}</tbody></table>`,
       censusTrendSource,
+      null,
+      'TABLE · 1920–2020',
     )}
   </div>
 
@@ -233,6 +395,8 @@ export function renderPopulation() {
     `<p class="panel-intro">In 1970 one Japanese person in fourteen was 65 or older. By 2023 it was
      nearly one in three (29.1%) — the highest share in the world.</p>${ageing}`,
     ageingSource,
+    null,
+    'CHART · 1970–2023',
   )}
 
   ${panel(
@@ -243,9 +407,10 @@ export function renderPopulation() {
      largest on record.</p>${birthsDeaths}`,
     birthsDeathsSource,
     'Natural change',
+    'CHART · 1970–2024',
   )}
 
-  ${panel('Births, deaths and marriages, 2023', factRows(vitalStats), vitalSource)}`;
+  ${panel('Births, deaths and marriages, 2023', factRows(vitalStats), vitalSource, null, 'TABLE · 2023')}`;
 }
 
 // ---------------------------------------------------------------------------
@@ -279,14 +444,32 @@ export function renderEconomy() {
     is 2.5%, and prices rose 2.7% in 2024 — fast by Japan's recent standards.</p>
   </section>
 
-  ${panel('Nominal GDP, 2014–2024', gdp, gdpTrendSource, 'National accounts')}
+  ${panel(
+    'Nominal GDP, 2014–2024',
+    `<p class="panel-intro">After the 2020 dip, nominal GDP climbed every year to a record
+     ¥${gdpTrend[gdpTrend.length - 1].trillionYen} trillion in ${gdpTrend[gdpTrend.length - 1].year} —
+     up ${pctChange(gdpTrend[gdpTrend.length - 1].trillionYen, gdpTrend[gdpTrend.length - 2].trillionYen).toFixed(1)}%
+     in the final year alone.</p>${gdp}`,
+    gdpTrendSource,
+    'National accounts',
+    'CHART · 2014–2024',
+  )}
 
   <div class="two-col">
-    ${panel('What the economy makes', `${sectors}<div class="legend">${sectorLegend}</div>`, sectorSource)}
-    ${panel('Prices, 2024', factRows(priceFacts), priceSource)}
+    ${panel(
+      'What the economy makes',
+      `<p class="panel-intro">Services produce nearly three yen in four of Japan's value
+       added; industry takes most of the rest, and agriculture, forestry and fisheries
+       just ${sectorShares[2].share}%.</p>
+       ${sectors}<div class="legend">${sectorLegend}</div>`,
+      sectorSource,
+      null,
+      'CHART · 2023',
+    )}
+    ${panel('Prices, 2024', factRows(priceFacts), priceSource, null, 'TABLE · 2024')}
   </div>
 
-  ${panel('Work and jobs, 2024', factRows(labourFacts), labourSource)}
+  ${panel('Work and jobs, 2024', factRows(labourFacts), labourSource, null, 'TABLE · 2024')}
 
   ${panel(
     'Trade, 2024',
@@ -298,6 +481,8 @@ export function renderEconomy() {
      <table class="mini-table"><thead><tr><th>Partner</th><th>Role in Japan's trade</th></tr></thead>
      <tbody>${partnerRows}</tbody></table>`,
     tradeFacts.source,
+    null,
+    'TABLE · 2024',
   )}`;
 }
 
@@ -428,8 +613,13 @@ export function renderPrefectures() {
   </section>
 
   <section class="panel">
-    <p class="panel-kicker">One tile per prefecture</p>
-    <h2>Where Japan lives: the prefecture tile map</h2>
+    <div class="panel-head">
+      <div class="panel-head-text">
+        <p class="panel-kicker">One tile per prefecture</p>
+        <h2>Where Japan lives: the prefecture tile map</h2>
+      </div>
+      <span class="badge">MAP · 2020 CENSUS</span>
+    </div>
     <p class="panel-intro">One tile per prefecture, laid out the way Japan itself is —
     Hokkaido top right, Okinawa bottom left — and shaded by the people counted
     there in 2020. Tokyo's single tile holds more people than the 15 smallest
@@ -450,8 +640,13 @@ export function renderPrefectures() {
   </section>
 
   <section class="panel">
-    <p class="panel-kicker">Side by side</p>
-    <h2>Compare prefectures</h2>
+    <div class="panel-head">
+      <div class="panel-head-text">
+        <p class="panel-kicker">Side by side</p>
+        <h2>Compare prefectures</h2>
+      </div>
+      <span class="badge">TOOL · 2020 CENSUS</span>
+    </div>
     <p class="panel-intro">Pick two or three prefectures and see them side by side —
     bars are scaled to the largest pick, with each one's share of Japan's
     126,146,099 people and its rank of 47.</p>
@@ -471,7 +666,12 @@ export function renderPrefectures() {
   </section>
 
   <section class="panel">
-    <h2>All 47 prefectures</h2>
+    <div class="panel-head">
+      <div class="panel-head-text">
+        <h2>All 47 prefectures</h2>
+      </div>
+      <span class="badge">TABLE · 47 PREFECTURES</span>
+    </div>
     <div class="pref-controls">
       <label class="pref-search">Search
         <input id="prefSearch" type="search" placeholder="Try “osaka”, “kyushu”, “naha”…" autocomplete="off">
@@ -530,14 +730,15 @@ export function renderLife() {
      1990 and 2023 — then both lines dipped after 2020, the first sustained fall in decades.</p>${expectancy}`,
     lifeExpectancySource,
     'The long life',
+    'CHART · 1990–2023',
   )}
 
   <div class="two-col">
-    ${panel('Health', factRows(healthFacts), healthSource)}
-    ${panel('Education', factRows(educationFacts), educationSource)}
+    ${panel('Health', factRows(healthFacts), healthSource, null, 'FACTS · 2022–2023')}
+    ${panel('Education', factRows(educationFacts), educationSource, null, 'FACTS · 2023')}
   </div>
   <div class="two-col">
-    ${panel('Households', factRows(householdFacts), householdSource)}
-    ${panel('Work and time', factRows(workFacts), workSource)}
+    ${panel('Households', factRows(householdFacts), householdSource, null, 'FACTS · 2020–2023')}
+    ${panel('Work and time', factRows(workFacts), workSource, null, 'FACTS · 2023')}
   </div>`;
 }

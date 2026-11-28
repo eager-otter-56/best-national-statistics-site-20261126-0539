@@ -124,7 +124,7 @@ body {
   background: var(--indigo);
   color: #fff;
   margin: 0 -20px 16px;
-  padding: 28px 36px 24px;
+  padding: 26px 36px 15px;
   border-radius: 0 0 18px 18px;
 }
 
@@ -201,9 +201,9 @@ body {
   grid-template-columns: 0.85fr 1.15fr;
   gap: 34px;
   align-items: start;
-  margin-top: 24px;
+  margin-top: 20px;
   border-top: 1px solid rgba(255, 255, 255, 0.22);
-  padding-top: 20px;
+  padding-top: 17px;
 }
 
 /* Cover tiles run a little flatter than the prefectures-page ones so
@@ -316,6 +316,24 @@ h1[tabindex="-1"]:focus {
   line-height: 1.08;
 }
 
+/* ONS-style change line under the KPI value: the movement, not just
+   the level. Direction carries the colour — indigo up, vermillion down. */
+.kpi-change {
+  margin: 0 0 6px;
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  font-variant-numeric: tabular-nums;
+}
+
+.kpi-change-up {
+  color: var(--indigo-soft);
+}
+
+.kpi-change-down {
+  color: var(--vermillion);
+}
+
 .kpi-note {
   margin: 0 0 8px;
   font-size: 0.9rem;
@@ -339,6 +357,35 @@ h1[tabindex="-1"]:focus {
   border-radius: 16px;
   padding: 22px 26px;
   margin: 0 0 18px;
+}
+
+/* Panel header row: kicker + title on the left, a Eurostat-style format
+   badge ("CHART · 2020 CENSUS", "TABLE · 47 PREFECTURES") on the right. */
+.panel-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: 11px;
+}
+
+.panel .panel-head h2 {
+  margin-bottom: 0;
+}
+
+.badge {
+  flex: none;
+  margin-top: 4px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  color: var(--indigo-soft);
+  background: #f2f5fc;
+  border: 1.5px solid #c3cfe8;
+  border-radius: 999px;
+  padding: 3px 9px;
 }
 
 /* The pyramid panel caps its chart width so all eighteen rows plus
@@ -708,6 +755,136 @@ h1[tabindex="-1"]:focus {
   color: var(--indigo);
 }
 
+/* Ticker strip: the Destatis / KOSIS band of headline figures that sits
+   between the poster hero and the KPI grid — portal furniture, one dense
+   line of label + value + year. */
+.ticker {
+  margin: 0 -20px 16px;
+  padding: 9px 36px;
+  background: #eceff7;
+  border-bottom: 1px solid #d4dbee;
+  font-size: 0.83rem;
+  line-height: 1.5;
+  color: var(--ink);
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 16px;
+  row-gap: 1px;
+  align-items: baseline;
+}
+
+.ticker-item {
+  white-space: nowrap;
+}
+
+.ticker-label {
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--muted);
+}
+
+.ticker-item strong {
+  color: var(--indigo);
+  font-variant-numeric: tabular-nums;
+}
+
+.ticker-year {
+  color: var(--muted);
+  font-size: 0.76rem;
+}
+
+.ticker-sep {
+  color: #a7b2cf;
+  margin: 0 -7px;
+}
+
+/* Japan QuickFacts: the Census Bureau's dense grouped fact table —
+   label + exact value + vintage tag, no cards, density as credibility. */
+.qf-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px 30px;
+}
+
+.qf-group h3 {
+  margin: 2px 0 4px;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--indigo);
+  border-bottom: 2.5px solid var(--vermillion);
+  padding-bottom: 5px;
+}
+
+.qf-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding: 5.5px 0;
+  border-bottom: 1px solid var(--line);
+}
+
+.qf-label {
+  font-size: 0.88rem;
+  color: #454e68;
+}
+
+.qf-vintage {
+  display: block;
+  font-size: 0.7rem;
+  letter-spacing: 0.04em;
+  color: var(--muted);
+}
+
+.qf-value {
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: var(--indigo);
+  white-space: nowrap;
+  font-size: 0.95rem;
+}
+
+.qf-foot {
+  margin: 12px 0 0;
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+/* Coverage strip: the named official surveys behind the atlas,
+   stat.go.jp-style taxonomy as a colophon block on the cover. */
+.coverage-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px 26px;
+}
+
+.coverage-item {
+  border-left: 3.5px solid var(--indigo-soft);
+  padding-left: 11px;
+}
+
+.coverage-item:nth-child(2),
+.coverage-item:nth-child(5) {
+  border-left-color: var(--vermillion);
+}
+
+.coverage-name {
+  margin: 0;
+  font-weight: 800;
+  color: var(--indigo);
+  font-size: 0.96rem;
+}
+
+.coverage-sub {
+  margin: 1px 0 0;
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
 /* Footer ------------------------------------------------------------------------ */
 .site-footer {
   border-top: 1px solid var(--line);
@@ -721,10 +898,36 @@ h1[tabindex="-1"]:focus {
   padding: 18px 20px 30px;
 }
 
+.footer-colophon {
+  margin: 10px 0 0;
+  padding-top: 10px;
+  border-top: 1px dashed #d8d2bd;
+  font-size: 0.78rem;
+  line-height: 1.65;
+  color: var(--muted);
+}
+
+.footer-colophon strong {
+  color: var(--indigo);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  font-size: 0.72rem;
+}
+
 /* Phone ------------------------------------------------------------------------- */
 @media (max-width: 860px) {
   .kpi-grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+  .qf-grid {
+    grid-template-columns: 1fr;
+    gap: 14px;
+  }
+  .coverage-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+  .ticker {
+    padding: 9px 24px;
   }
   .two-col,
   .trend-cols,
@@ -759,6 +962,18 @@ h1[tabindex="-1"]:focus {
     margin: 0 -12px 18px;
     padding: 22px 18px 22px;
     border-radius: 0 0 14px 14px;
+  }
+  .ticker {
+    margin: 0 -12px 14px;
+    padding: 8px 18px;
+    font-size: 0.78rem;
+  }
+  .coverage-grid {
+    grid-template-columns: 1fr;
+  }
+  .badge {
+    font-size: 0.6rem;
+    padding: 2px 7px;
   }
   .hero h1 {
     font-size: 2.35rem;
